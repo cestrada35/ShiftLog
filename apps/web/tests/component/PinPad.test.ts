@@ -32,8 +32,6 @@ function mountPinPad() {
 describe('PinPad', () => {
   it('renders a numeric input with a submit button', () => {
     const wrapper = mountPinPad()
-    console.log('test!!')
-    console.log(wrapper.html())
     expect(wrapper.find('[data-testid="pin-input"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="pin-submit"]').exists()).toBe(true)
   })
