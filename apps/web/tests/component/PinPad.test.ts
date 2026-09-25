@@ -1,31 +1,11 @@
 import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
 import PinPad from '../../app/components/kiosk/PinPad.vue'
-
-const stubs = {
-  Card: {
-    template: '<div><slot name="content" /></div>',
-  },
-  InputText: {
-    props: ['modelValue'],
-    emits: ['update:modelValue'],
-    template: `
-      <input
-        :value="modelValue"
-        v-bind="$attrs"
-        @input="$emit('update:modelValue', ($event.target.value))"
-      />
-    `,
-  },
-  Button: {
-    props: ['label'],
-    template: '<button v-bind="$attrs">{{ label }}</button>',
-  },
-}
+import { primevueStubs } from '../stubs'
 
 function mountPinPad() {
   return mount(PinPad, {
-    global: { stubs },
+    global: { stubs: primevueStubs },
   })
 }
 

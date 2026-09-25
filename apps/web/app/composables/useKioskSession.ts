@@ -12,16 +12,6 @@ export function useKioskSession() {
     // const error = ref({})
 
     async function identify(pin: string) {
-        // authenticateByPin(pin)
-        //     .then(result => {
-        //         volunteer.value = result.volunteer
-        //         activeShift.value = result.activeShift
-        //         state.value = 'identified'
-        //     })
-        //     .catch(err => {
-        //         error.value = err
-        //         state.value = 'error'
-        //     })
         try {
             const res = await authenticateByPin(pin)
             volunteer.value = res.volunteer
@@ -44,14 +34,5 @@ export function useKioskSession() {
 
     return { state, volunteer, activeShift, error, identify, reset }
 }
-
-
-// export type KioskSessionState = 'idle' | 'identified' | 'error'
-
-// Track what state the kiosk is in (awaiting PIN, identifying, error, identified).
-// Hold who is identified and whether they have an active shift.
-// Expose actions (identify, reset).
-
-
 
 
