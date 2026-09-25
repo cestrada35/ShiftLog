@@ -1,4 +1,4 @@
-import type { KioskAuthResponse, ErrorResponse } from '~/lib/api'
+import type { KioskAuthResponse, ErrorResponse, Project, Shift, CheckInRequest } from '~/lib/api'
 
 export class ApiError extends Error {
   constructor(
@@ -10,17 +10,32 @@ export class ApiError extends Error {
   }
 }
 
-export async function authenticateByPin(pin: string): Promise<KioskAuthResponse> {
-  const res = await fetch('/api/kiosk/auth', {
-    method: 'POST',
+async function request<T>(url: string, init?: RequestInit): Promise<T> {
+  const res = await fetch(url, {
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ pin }),
+    ...init,
   })
-
   if (!res.ok) {
     const err = (await res.json()) as ErrorResponse
     throw new ApiError(err.code, err.message, res.status)
   }
+  return res.json() as Promise<T>
+}
 
-  return res.json() as Promise<KioskAuthResponse>
+export function authenticateByPin(pin: string): Promise<KioskAuthResponse> {
+  return request('/api/kiosk/auth', {
+    method: 'POST',
+    body: JSON.stringify({ pin }),
+  })
+}
+
+export function fetchProjects(): Promise<Project[]> {
+  return request('/api/kiosk/projects')
+}
+
+export function checkIn(body: CheckInRequest): Promise<Shift> {
+  return request('/api/kiosk/check-in', {
+    method: 'POST',
+    body: JSON.stringify(body),
+  })
 }

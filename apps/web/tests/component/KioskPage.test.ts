@@ -1,11 +1,14 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
 import KioskPage from '../../app/pages/kiosk/index.vue'
+import PinPad from '../../app/components/kiosk/PinPad.vue'
+// import ProjectPicker from '../../app/components/kiosk/ProjectPicker.vue'
 import { primevueStubs } from '../stubs'
 
 function mountKiosk() {
   return mount(KioskPage, {
     global: { stubs: primevueStubs },
+    components: { PinPad },
   })
 }
 
@@ -15,23 +18,28 @@ describe('Kiosk page', () => {
     expect(wrapper.find('[data-testid="pin-input"]').exists()).toBe(true)
   })
 
-  it('shows a welcome message after a valid PIN', async () => {
+  it('shows the project picker after a valid PIN with no active shift', async () => {
     const wrapper = mountKiosk()
 
     await wrapper.find('[data-testid="pin-input"]').setValue('1234')
     await wrapper.find('form').trigger('submit')
     await flushPromises()
 
-    expect(wrapper.text()).toContain('Ada Lovelace')
-  })
+    await vi.waitFor(() => {
+        expect(wrapper.text()).toContain('Mark S.')
+        expect(wrapper.find('[data-testid="project-picker"]').exists()).toBe(true)
+        expect(wrapper.find('[data-testid="check-in"]').exists()).toBe(true)
+    })
+   })
 
   it('shows an error message after an invalid PIN', async () => {
     const wrapper = mountKiosk()
 
     await wrapper.find('[data-testid="pin-input"]').setValue('0000')
     await wrapper.find('form').trigger('submit')
-    await flushPromises()
 
-    expect(wrapper.text()).toContain('PIN not recognized')
-  })
+    await vi.waitFor(() => {
+        expect(wrapper.text()).toContain('PIN not recognized')
+    })
+    })
 })

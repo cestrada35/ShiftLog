@@ -1,7 +1,17 @@
 <script setup lang="ts">
 import { useKioskSession } from '~/composables/useKioskSession'
 
-const { state, volunteer, error, identify, reset } = useKioskSession()
+const {
+  state,
+  volunteer,
+  projects,
+  selectedProjectId,
+  error,
+  identify,
+  selectProject,
+  submitCheckIn,
+  reset,
+} = useKioskSession()
 </script>
 
 <template>
@@ -13,13 +23,23 @@ const { state, volunteer, error, identify, reset } = useKioskSession()
 
       <Card v-else-if="state === 'identified'">
         <template #content>
-          <p class="text-xl text-center" data-testid="welcome">
-            Welcome, {{ volunteer?.name }}
-          </p>
+          <p class="text-xl mb-6">Welcome, {{ volunteer?.name }}</p>
+          <ProjectPicker
+            :projects="projects"
+            :selected-id="selectedProjectId"
+            @select="selectProject"
+          />
           <Button
-            data-testid="reset"
-            label="Done"
+            data-testid="check-in"
+            label="Check in"
             class="w-full mt-6"
+            :disabled="!selectedProjectId"
+            @click="submitCheckIn"
+          />
+          <Button
+            label="Cancel"
+            severity="secondary"
+            class="w-full mt-2"
             @click="reset"
           />
         </template>
@@ -31,16 +51,21 @@ const { state, volunteer, error, identify, reset } = useKioskSession()
             {{ error }}
           </p>
           <Button
-            data-testid="retry"
             label="Try again"
             class="w-full mt-6"
             @click="reset"
           />
         </template>
       </Card>
-      <div v-else>
-        <p>test2</p>
-      </div>
+
+      <Card v-else-if="state === 'active'">
+        <template #content>
+          <p class="text-xl text-center">On shift</p>
+          <p class="text-sm text-slate-500 text-center mt-1">
+            (Check-out UI coming next)
+          </p>
+        </template>
+      </Card>
     </div>
   </div>
 </template>
