@@ -27,19 +27,22 @@ const {
           <ProjectPicker
             :projects="projects"
             :selected-id="selectedProjectId"
+            :disabled="state === 'submitting'"
             @select="selectProject"
           />
           <Button
             data-testid="check-in"
             label="Check in"
             class="w-full mt-6"
-            :disabled="!selectedProjectId"
+            :disabled="!selectedProjectId || state === 'submitting'"
+            :loading="state === 'submitting'"
             @click="submitCheckIn"
           />
           <Button
             label="Cancel"
             severity="secondary"
             class="w-full mt-2"
+            :disabled="state === 'submitting'"
             @click="reset"
           />
         </template>
