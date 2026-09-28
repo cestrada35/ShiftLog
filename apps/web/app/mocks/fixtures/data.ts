@@ -15,5 +15,9 @@ export const pinsByVolunteer: Record<string, string> = {
   '22222222-2222-4222-8222-222222222222': '5678',
 }
 
-// Shift store for the mock session
-export const shifts: Shift[] = []
+// Mutable shifts
+export let shifts: Shift[] = []
+
+export function resetFixtures() {
+  shifts = []
+}

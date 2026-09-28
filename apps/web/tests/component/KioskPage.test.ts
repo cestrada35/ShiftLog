@@ -2,13 +2,13 @@ import { describe, it, expect, vi } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
 import KioskPage from '../../app/pages/kiosk/index.vue'
 import PinPad from '../../app/components/kiosk/PinPad.vue'
-// import ProjectPicker from '../../app/components/kiosk/ProjectPicker.vue'
+import ProjectPicker from '../../app/components/kiosk/ProjectPicker.vue'
 import { primevueStubs } from '../stubs'
 
 function mountKiosk() {
   return mount(KioskPage, {
     global: { stubs: primevueStubs },
-    components: { PinPad },
+    components: { PinPad, ProjectPicker },
   })
 }
 
