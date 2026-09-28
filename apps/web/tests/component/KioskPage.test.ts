@@ -30,7 +30,7 @@ describe('Kiosk page', () => {
         expect(wrapper.find('[data-testid="project-picker"]').exists()).toBe(true)
         expect(wrapper.find('[data-testid="check-in"]').exists()).toBe(true)
     })
-   })
+  })
 
   it('shows an error message after an invalid PIN', async () => {
     const wrapper = mountKiosk()
@@ -41,5 +41,28 @@ describe('Kiosk page', () => {
     await vi.waitFor(() => {
         expect(wrapper.text()).toContain('PIN not recognized')
     })
+  })
+  
+  it('shows a confirmation screen after check-out', async () => {
+    const wrapper = mountKiosk()
+
+    // identify and check in
+    await wrapper.find('[data-testid="pin-input"]').setValue('1234')
+    await wrapper.find('form').trigger('submit')
+    await vi.waitFor(() => {
+        expect(wrapper.find('[data-testid="check-in"]').exists()).toBe(true)
     })
+
+    await wrapper.find('[role="radio"]').trigger('click')
+    await wrapper.find('[data-testid="check-in"]').trigger('click')
+    await vi.waitFor(() => {
+        expect(wrapper.find('[data-testid="check-out"]').exists()).toBe(true)
+    })
+
+    // check out
+    await wrapper.find('[data-testid="check-out"]').trigger('click')
+    await vi.waitFor(() => {
+        expect(wrapper.find('[data-testid="completed"]').exists()).toBe(true)
+    })
+  })
 })

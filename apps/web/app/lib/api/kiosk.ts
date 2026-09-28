@@ -39,3 +39,10 @@ export function checkIn(body: CheckInRequest): Promise<Shift> {
     body: JSON.stringify(body),
   })
 }
+
+export function checkOut(shiftId: string): Promise<Shift> {
+  return request('/api/kiosk/check-out', {
+    method: 'POST',
+    body: JSON.stringify({ shiftId }),
+  })
+}

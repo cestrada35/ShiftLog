@@ -4,14 +4,22 @@ import { useKioskSession } from '~/composables/useKioskSession'
 const {
   state,
   volunteer,
+  activeShift,
+  completedShift,
   projects,
   selectedProjectId,
   error,
   identify,
   selectProject,
   submitCheckIn,
+  submitCheckOut,
   reset,
 } = useKioskSession()
+
+function formatTime(iso: string | undefined): string {
+  if (!iso) return ''
+  return new Date(iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+}
 </script>
 
 <template>
@@ -63,10 +71,34 @@ const {
 
       <Card v-else-if="state === 'active'">
         <template #content>
-          <p class="text-xl text-center">On shift</p>
+          <p class="text-xl text-center" data-testid="on-shift">You're on shift</p>
           <p class="text-sm text-slate-500 text-center mt-1">
-            (Check-out UI coming next)
+            Started {{ formatTime(activeShift?.startedAt) }}
           </p>
+          <Button
+            data-testid="check-out"
+            label="Check out"
+            class="w-full mt-6"
+            :disabled="state === 'submitting'"
+            :loading="state === 'submitting'"
+            @click="submitCheckOut"
+          />
+        </template>
+      </Card>
+
+      <Card v-else-if="state === 'completed'">
+        <template #content>
+          <div data-testid="completed">
+            <p class="text-xl text-center">Thanks, {{ volunteer?.name }}</p>
+            <p class="text-sm text-slate-500 text-center mt-2">
+              Shift recorded.
+            </p>
+            <Button
+              label="Done"
+              class="w-full mt-6"
+              @click="reset"
+            />
+          </div>
         </template>
       </Card>
     </div>

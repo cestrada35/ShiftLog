@@ -44,7 +44,7 @@ describe('useKioskSession', () => {
         await promise
         expect(session.state.value).toBe('active')
         expect(session.activeShift.value).not.toBeNull()
-        })
+    })
 
     it('is a no-op if submitCheckIn is called without a selected project', async () => {
         const session = useKioskSession()
@@ -54,6 +54,29 @@ describe('useKioskSession', () => {
 
         expect(session.state.value).toBe('identified')
         expect(session.activeShift.value).toBeNull()
+    })
+
+    it('completes a shift via submitCheckOut and lands in completed', async () => {
+        const session = useKioskSession()
+        await session.identify('1234')
+        session.selectProject(session.projects.value[0].id)
+        await session.submitCheckIn()
+
+        const promise = session.submitCheckOut()
+        expect(session.state.value).toBe('submitting')
+
+        await promise
+        expect(session.state.value).toBe('completed')
+        expect(session.activeShift.value).toBeNull()
+    })
+
+    it('is a no-op if submitCheckOut is called with no active shift', async () => {
+        const session = useKioskSession()
+        await session.identify('1234')
+
+        await session.submitCheckOut()
+
+        expect(session.state.value).toBe('identified')
     })
 
     it('reset clears all state back to idle', async () => {
