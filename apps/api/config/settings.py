@@ -10,7 +10,7 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.auth",
     "rest_framework",
-    "infrastructure.django",
+    "infrastructure.django.apps.ShiftLogDjangoConfig",
 ]
 
 MIDDLEWARE = [
