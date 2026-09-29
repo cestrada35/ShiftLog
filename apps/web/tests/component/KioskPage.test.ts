@@ -42,11 +42,10 @@ describe('Kiosk page', () => {
         expect(wrapper.text()).toContain('PIN not recognized')
     })
   })
-  
+
   it('shows a confirmation screen after check-out', async () => {
     const wrapper = mountKiosk()
 
-    // identify and check in
     await wrapper.find('[data-testid="pin-input"]').setValue('1234')
     await wrapper.find('form').trigger('submit')
     await vi.waitFor(() => {
