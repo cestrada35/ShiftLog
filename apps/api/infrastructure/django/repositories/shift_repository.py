@@ -32,3 +32,10 @@ class DjangoShiftRepository:
             started_at=row.started_at,
             ended_at=row.ended_at,
         )
+    
+    def find_by_id(self, shift_id: UUID) -> Shift | None:
+        try:
+            row = ShiftModel.objects.get(id=shift_id)
+        except ShiftModel.DoesNotExist:
+            return None
+        return self._to_domain(row)
