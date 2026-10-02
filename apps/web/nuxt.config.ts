@@ -16,6 +16,14 @@ export default defineNuxtConfig({
       include: ['Button', 'InputText', 'Card', 'Message', 'ProgressSpinner'],
     },
   },
+  nitro: {
+    devProxy: {
+      '/api': {
+        target: 'http://localhost:8000/api',
+        changeOrigin: true
+      }
+    }
+  },
   css: ['primeicons/primeicons.css'],
   components: [
     { path: '~/components', pathPrefix: false },
@@ -25,8 +33,8 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      // PRIMEUI_LICENSE: process.env.PRIMEUI_LICENSE,
-      
+      useMocks: process.env.NUXT_PUBLIC_USE_MOCKS !== 'false',
+      PRIMEUI_LICENSE: process.env.PRIMEUI_LICENSE,
     }
   }
 })
