@@ -4,14 +4,23 @@ from django.core.management.base import BaseCommand
 
 from domain.users.pin import Pin
 from infrastructure.auth.pin_hasher import HmacPinHasher
-from infrastructure.django.models import ProjectModel, UserModel
+from infrastructure.django.models import AdminModel, ProjectModel, UserModel
 
 
 class Command(BaseCommand):
-    help = "Seed demo data: one volunteer (PIN 1234) and two projects."
+    help = "Seed demo data: one admin, one volunteer (PIN 1234), two projects."
 
     def handle(self, *args, **options):
         hasher = HmacPinHasher()
+
+        admin, created = AdminModel.objects.get_or_create(
+            email="admin@shiftlog.local",
+            defaults={"id": uuid4(), "name": "Admin One"},
+        )
+        self.stdout.write(
+            f"Admin {'created' if created else 'exists'}: {admin.name} "
+            f"(id={admin.id}, email={admin.email})"
+        )
 
         user, created = UserModel.objects.get_or_create(
             pin_hash=hasher.hash(Pin("1234")),

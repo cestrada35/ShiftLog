@@ -1,5 +1,6 @@
 from django.urls import path
 
+from interfaces.http.admin_views import AdminWhoAmIView
 from interfaces.http.kiosk_views import (
     CheckInView,
     CheckOutView,
