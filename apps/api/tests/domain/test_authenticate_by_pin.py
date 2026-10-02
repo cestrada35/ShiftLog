@@ -26,7 +26,7 @@ def make_command(users=None, shifts=None):
     )
 
 
-def make_user(pin: str = "1234", name: str = "Ada Lovelace") -> User:
+def make_user(pin: str = "1234", name: str = "Mark S.") -> User:
     return User(
         id=uuid4(),
         name=name,
@@ -41,7 +41,7 @@ def test_valid_pin_returns_identification():
     result = cmd.execute("1234")
 
     assert result.volunteer.id == user.id
-    assert result.volunteer.name == "Ada Lovelace"
+    assert result.volunteer.name == "Mark S."
     assert result.active_shift is None
 
 

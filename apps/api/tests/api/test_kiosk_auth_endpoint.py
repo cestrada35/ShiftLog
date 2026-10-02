@@ -16,7 +16,7 @@ def seeded_user(hasher):
     pin = Pin("1234")
     return UserModel.objects.create(
         id=uuid4(),
-        name="Ada Lovelace",
+        name="Mark S.",
         pin_hash=hasher.hash(pin),
     )
 
@@ -36,7 +36,7 @@ def test_valid_pin_returns_identification(client, seeded_user, settings):
 
     # Contract shape — camelCase per OpenAPI
     assert set(body.keys()) == {"volunteer", "activeShift"}
-    assert body["volunteer"]["name"] == "Ada Lovelace"
+    assert body["volunteer"]["name"] == "Mark S."
     assert "id" in body["volunteer"]
     assert body["activeShift"] is None
 

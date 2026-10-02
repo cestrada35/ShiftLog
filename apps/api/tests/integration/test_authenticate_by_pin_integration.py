@@ -26,7 +26,7 @@ def seed_user(hasher):
     pin = Pin("1234")
     user = UserModel.objects.create(
         id=uuid4(),
-        name="Ada Lovelace",
+        name="Mark S.",
         pin_hash=hasher.hash(pin),
     )
     return user
@@ -42,7 +42,7 @@ def test_authenticate_against_real_database(seed_user, hasher):
 
     result = command.execute("1234")
 
-    assert result.volunteer.name == "Ada Lovelace"
+    assert result.volunteer.name == "Mark S."
     assert result.active_shift is None
 
 

@@ -26,3 +26,17 @@ class KioskAuthResponseSerializer(serializers.Serializer):
 class ErrorResponseSerializer(serializers.Serializer):
     code = serializers.CharField()
     message = serializers.CharField()
+
+class ProjectSerializer(serializers.Serializer):
+    id = serializers.UUIDField()
+    name = serializers.CharField()
+    description = serializers.CharField()
+
+
+class CheckInRequestSerializer(serializers.Serializer):
+    volunteerId = serializers.UUIDField(source="volunteer_id")
+    projectId = serializers.UUIDField(source="project_id")
+
+
+class CheckOutRequestSerializer(serializers.Serializer):
+    shiftId = serializers.UUIDField(source="shift_id")
