@@ -40,3 +40,8 @@ class CheckInRequestSerializer(serializers.Serializer):
 
 class CheckOutRequestSerializer(serializers.Serializer):
     shiftId = serializers.UUIDField(source="shift_id")
+
+class AdminSerializer(serializers.Serializer):
+    id = serializers.UUIDField()
+    email = serializers.EmailField()
+    name = serializers.CharField()

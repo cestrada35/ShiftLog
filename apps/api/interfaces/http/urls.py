@@ -12,4 +12,6 @@ urlpatterns = [
     path("kiosk/projects", ListProjectsView.as_view(), name="kiosk-projects"),
     path("kiosk/check-in", CheckInView.as_view(), name="kiosk-check-in"),
     path("kiosk/check-out", CheckOutView.as_view(), name="kiosk-check-out"),
+
+    path("admin/whoami", AdminWhoAmIView.as_view(), name="admin-whoami"),
 ]

@@ -1,5 +1,11 @@
-from .user_repository import DjangoUserRepository
-from .shift_repository import DjangoShiftRepository
+from .admin_repository import DjangoAdminRepository
 from .project_repository import DjangoProjectRepository
+from .shift_repository import DjangoShiftRepository
+from .user_repository import DjangoUserRepository
 
-__all__ = ["DjangoUserRepository", "DjangoShiftRepository", "DjangoProjectRepository"]
+__all__ = [
+    "DjangoAdminRepository",
+    "DjangoProjectRepository",
+    "DjangoShiftRepository",
+    "DjangoUserRepository",
+]
