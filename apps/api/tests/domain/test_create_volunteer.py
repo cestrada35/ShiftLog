@@ -35,9 +35,9 @@ def test_creates_volunteer_with_hashed_credentials():
     users = InMemoryUserRepository()
     cmd = make_command(users=users, pins=["1234"])
 
-    result = cmd.execute("Ada Lovelace")
+    result = cmd.execute("Mark S.")
 
-    assert result.volunteer.name == "Ada Lovelace"
+    assert result.volunteer.name == "Mark S."
     assert result.volunteer.pin_hash == "hashed-pin:1234"
     assert result.volunteer.password_hash == "hashed-password:demo-pass-123"
     assert result.volunteer.is_active is True
@@ -48,8 +48,8 @@ def test_creates_volunteer_with_hashed_credentials():
 
 def test_trims_whitespace_from_name():
     cmd = make_command()
-    result = cmd.execute("   Ada Lovelace   ")
-    assert result.volunteer.name == "Ada Lovelace"
+    result = cmd.execute("   Mark S.   ")
+    assert result.volunteer.name == "Mark S."
 
 
 def test_rejects_empty_name():
@@ -68,7 +68,7 @@ def test_retries_pin_on_collision():
     users = InMemoryUserRepository([existing])
     cmd = make_command(users=users, pins=["1234", "5678"])
 
-    result = cmd.execute("Ada Lovelace")
+    result = cmd.execute("Mark S.")
 
     assert result.raw_pin == "5678"
     assert result.volunteer.pin_hash == "hashed-pin:5678"
@@ -92,12 +92,12 @@ def test_gives_up_after_max_attempts():
     )
 
     with pytest.raises(PinGenerationError):
-        cmd.execute("Ada Lovelace")
+        cmd.execute("Mark S.")
 
 
 def test_set_active_toggles_state():
     cmd = make_command()
-    created = cmd.execute("Ada Lovelace")
+    created = cmd.execute("Mark S.")
     users = InMemoryUserRepository([created.volunteer])
 
     toggle = SetVolunteerActiveCommand(users=users)
