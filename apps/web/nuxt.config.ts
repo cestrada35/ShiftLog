@@ -1,7 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2026-09-22',
-  devtools: { enabled: true },
+  devtools: { enabled: process.env.NUXT_PUBLIC_USE_MOCKS === 'false' ? false : true },
   typescript: { strict: true },
   modules: [
     '@pinia/nuxt',
