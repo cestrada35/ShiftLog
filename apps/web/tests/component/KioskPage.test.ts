@@ -22,7 +22,7 @@ describe('Kiosk page', () => {
     const wrapper = mountKiosk()
 
     await wrapper.find('[data-testid="pin-input"]').setValue('1234')
-    await wrapper.find('form').trigger('submit')
+    await wrapper.find('[data-testid="pin-submit"]').trigger('click')
     await flushPromises()
 
     await vi.waitFor(() => {
@@ -36,7 +36,7 @@ describe('Kiosk page', () => {
     const wrapper = mountKiosk()
 
     await wrapper.find('[data-testid="pin-input"]').setValue('0000')
-    await wrapper.find('form').trigger('submit')
+    await wrapper.find('[data-testid="pin-submit"]').trigger('click')
 
     await vi.waitFor(() => {
         expect(wrapper.text()).toContain('PIN not recognized')
@@ -47,7 +47,7 @@ describe('Kiosk page', () => {
     const wrapper = mountKiosk()
 
     await wrapper.find('[data-testid="pin-input"]').setValue('1234')
-    await wrapper.find('form').trigger('submit')
+    await wrapper.find('[data-testid="pin-submit"]').trigger('click')
     await vi.waitFor(() => {
         expect(wrapper.find('[data-testid="check-in"]').exists()).toBe(true)
     })

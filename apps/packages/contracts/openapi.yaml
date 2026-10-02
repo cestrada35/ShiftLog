@@ -106,7 +106,33 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
+  /admin/whoami:
+    get:
+      tags: [admin]
+      summary: Return the current admin's profile
+      operationId: adminWhoAmI
+      security:
+        - AdminHeader: []
+      responses:
+        '200':
+          description: Admin profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Admin'
+        '401':
+          description: Missing or invalid admin identity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
 components:
+  securitySchemes:
+    AdminHeader:
+      type: apiKey
+      in: header
+      name: X-Admin-Id
   schemas:
     KioskAuthRequest:
       type: object
@@ -190,6 +216,19 @@ components:
         shiftId:
           type: string
           format: uuid
+
+    Admin:
+      type: object
+      required: [id, email, name]
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        name:
+          type: string
 
     ErrorResponse:
       type: object

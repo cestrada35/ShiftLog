@@ -20,7 +20,7 @@ describe('PinPad', () => {
     const wrapper = mountPinPad()
 
     await wrapper.find('[data-testid="pin-input"]').setValue('1234')
-    await wrapper.find('form').trigger('submit')
+    await wrapper.find('[data-testid="pin-submit"]').trigger('click')
 
     expect(wrapper.emitted('submit')).toEqual([['1234']])
   })
