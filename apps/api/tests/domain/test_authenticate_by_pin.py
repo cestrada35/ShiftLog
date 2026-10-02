@@ -8,7 +8,7 @@ from domain.kiosk.authenticate_by_pin import (
     InvalidPinError,
 )
 from domain.shifts.shift import Shift
-from domain.users.pin import InvalidPinFormat
+from domain.users.pin import InvalidPinFormat, Pin
 from domain.users.user import User
 
 from tests.domain.fakes import (
@@ -30,7 +30,8 @@ def make_user(pin: str = "1234", name: str = "Mark S.") -> User:
     return User(
         id=uuid4(),
         name=name,
-        pin_hash=f"hashed:{pin}",
+        pin_hash=FakePinHasher().hash(Pin(pin)),
+        password_hash="hashed-password:placeholder",
     )
 
 

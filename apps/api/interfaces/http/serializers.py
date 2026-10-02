@@ -45,3 +45,17 @@ class AdminSerializer(serializers.Serializer):
     id = serializers.UUIDField()
     email = serializers.EmailField()
     name = serializers.CharField()
+
+class VolunteerSerializer(serializers.Serializer):
+    id = serializers.UUIDField()
+    name = serializers.CharField()
+    isActive = serializers.BooleanField(source="is_active")
+
+
+class CreateVolunteerRequestSerializer(serializers.Serializer):
+    name = serializers.CharField(min_length=1, max_length=255)
+
+
+class UpdateVolunteerRequestSerializer(serializers.Serializer):
+    name = serializers.CharField(min_length=1, max_length=255, required=False)
+    isActive = serializers.BooleanField(source="is_active", required=False)

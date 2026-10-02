@@ -127,6 +127,90 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
+  /admin/volunteers:
+    get:
+      tags: [admin]
+      summary: List all volunteers
+      security:
+        - AdminHeader: []
+      responses:
+        '200':
+          description: All volunteers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Volunteer'
+    post:
+      tags: [admin]
+      summary: Create a volunteer and return generated credentials
+      security:
+        - AdminHeader: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name]
+              properties:
+                name:
+                  type: string
+      responses:
+        '201':
+          description: Volunteer created. PIN and password are shown once.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [volunteer, pin, password]
+                properties:
+                  volunteer:
+                    $ref: '#/components/schemas/Volunteer'
+                  pin:
+                    type: string
+                  password:
+                    type: string
+
+/admin/volunteers/{volunteerId}:
+    patch:
+      tags: [admin]
+      summary: Update a volunteer's name or active state
+      security:
+        - AdminHeader: []
+      parameters:
+        - in: path
+          name: volunteerId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                isActive:
+                  type: boolean
+      responses:
+        '200':
+          description: Updated volunteer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Volunteer'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
 components:
   securitySchemes:
     AdminHeader:
@@ -157,13 +241,15 @@ components:
 
     Volunteer:
       type: object
-      required: [id, name]
+      required: [id, name, isActive]
       properties:
         id:
           type: string
           format: uuid
         name:
           type: string
+        isActive:
+          type: boolean
 
     Project:
       type: object
@@ -238,3 +324,17 @@ components:
           type: string
         message:
           type: string
+
+
+864119
+  
+
+curl -s -X PATCH http://localhost:8000/api/admin/volunteers/$GRACE \
+  -H "Content-Type: application/json" \
+  -H "X-Admin-Id: $ADMIN" \
+  -d '{"isActive": true}' | python -m json.tool
+{
+    "id": "64db2706-19f9-4820-ad77-1b4e50da4baa",
+    "name": "Grace Hopper",
+    "isActive": false
+}
