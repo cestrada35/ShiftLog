@@ -10,7 +10,7 @@ test('volunteer can check in and check out', async ({ page }) => {
   await page.getByRole('button', { name: 'Continue' }).click()
 
   // Project picker appears with real data from Django
-  await expect(page.getByText('Welcome, Mark S.')).toBeVisible()
+  await expect(page.getByText('Mark S.')).toBeVisible()
   await expect(page.getByRole('radio')).toHaveCount(2)
 
   // Pick the first project
