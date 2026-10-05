@@ -16,7 +16,7 @@ def admin():
 @pytest.fixture
 def volunteer():
     return UserModel.objects.create(
-        id=uuid4(), name="Ada Lovelace",
+        id=uuid4(), name="Mark S.",
         pin_hash="h1", password_hash="h2",
     )
 
@@ -46,7 +46,7 @@ def test_dashboard_stats_counts(client, admin, volunteer, project):
     assert body["activeProjects"] == 1
     assert body["shiftsToday"] == 1
     assert len(body["recentShifts"]) == 1
-    assert body["recentShifts"][0]["volunteerName"] == "Ada Lovelace"
+    assert body["recentShifts"][0]["volunteerName"] == "Mark S."
     assert body["recentShifts"][0]["projectName"] == "Kitchen"
 
 
