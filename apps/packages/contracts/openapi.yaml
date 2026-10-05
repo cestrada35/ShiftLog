@@ -210,25 +210,42 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-/admin/dashboard/stats:
-  get:
-    tags: [admin]
-    summary: Get aggregate stats for the admin dashboard
-    security:
-      - AdminHeader: []
-    responses:
-      '200':
-        description: Dashboard stats
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/DashboardStats'
-      '401':
-        description: Missing or invalid admin identity
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
+
+  /admin/dashboard/stats:
+    get:
+      tags: [admin]
+      summary: Get aggregate stats for the admin dashboard
+      security:
+        - AdminHeader: []
+      responses:
+        '200':
+          description: Dashboard stats
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardStats'
+        '401':
+          description: Missing or invalid admin identity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    /admin/dev/admins:
+    get:
+      tags: [admin]
+      summary: Dev-only list of active admins (404 in production)
+      responses:
+        '200':
+          description: Active admins
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AdminListItem'
+        '404':
+          description: Not available (non-DEBUG environments)
 
 components:
   securitySchemes:
@@ -237,147 +254,161 @@ components:
       in: header
       name: X-Admin-Id
   schemas:
-    KioskAuthRequest:
-      type: object
-      required: [pin]
-      properties:
-        pin:
-          type: string
-          minLength: 4
-          maxLength: 6
-          pattern: '^[0-9]+$'
+  KioskAuthRequest:
+    type: object
+    required: [pin]
+    properties:
+      pin:
+        type: string
+        minLength: 4
+        maxLength: 6
+        pattern: '^[0-9]+$'
 
-    KioskAuthResponse:
-      type: object
-      required: [volunteer, activeShift]
-      properties:
-        volunteer:
-          $ref: '#/components/schemas/Volunteer'
-        activeShift:
-          oneOf:
-            - $ref: '#/components/schemas/Shift'
-            - type: 'null'
+  KioskAuthResponse:
+    type: object
+    required: [volunteer, activeShift]
+    properties:
+      volunteer:
+        $ref: '#/components/schemas/Volunteer'
+      activeShift:
+        oneOf:
+          - $ref: '#/components/schemas/Shift'
+          - type: 'null'
 
-    Volunteer:
-      type: object
-      required: [id, name, isActive]
-      properties:
-        id:
-          type: string
-          format: uuid
-        name:
-          type: string
-        isActive:
-          type: boolean
+  Volunteer:
+    type: object
+    required: [id, name, isActive]
+    properties:
+      id:
+        type: string
+        format: uuid
+      name:
+        type: string
+      isActive:
+        type: boolean
 
-    Project:
-      type: object
-      required: [id, name]
-      properties:
-        id:
-          type: string
-          format: uuid
-        name:
-          type: string
-        description:
-          type: string
+  Project:
+    type: object
+    required: [id, name]
+    properties:
+      id:
+        type: string
+        format: uuid
+      name:
+        type: string
+      description:
+        type: string
 
-    Shift:
-      type: object
-      required: [id, volunteerId, projectId, startedAt, endedAt]
-      properties:
-        id:
-          type: string
-          format: uuid
-        volunteerId:
-          type: string
-          format: uuid
-        projectId:
-          type: string
-          format: uuid
-        startedAt:
-          type: string
-          format: date-time
-        endedAt:
-          type: string
-          format: date-time
-          nullable: true
+  Shift:
+    type: object
+    required: [id, volunteerId, projectId, startedAt, endedAt]
+    properties:
+      id:
+        type: string
+        format: uuid
+      volunteerId:
+        type: string
+        format: uuid
+      projectId:
+        type: string
+        format: uuid
+      startedAt:
+        type: string
+        format: date-time
+      endedAt:
+        type: string
+        format: date-time
+        nullable: true
 
-    CheckInRequest:
-      type: object
-      required: [volunteerId, projectId]
-      properties:
-        volunteerId:
-          type: string
-          format: uuid
-        projectId:
-          type: string
-          format: uuid
+  CheckInRequest:
+    type: object
+    required: [volunteerId, projectId]
+    properties:
+      volunteerId:
+        type: string
+        format: uuid
+      projectId:
+        type: string
+        format: uuid
 
-    CheckOutRequest:
-      type: object
-      required: [shiftId]
-      properties:
-        shiftId:
-          type: string
-          format: uuid
+  CheckOutRequest:
+    type: object
+    required: [shiftId]
+    properties:
+      shiftId:
+        type: string
+        format: uuid
 
-    Admin:
-      type: object
-      required: [id, email, name]
-      properties:
-        id:
-          type: string
-          format: uuid
-        email:
-          type: string
-          format: email
-        name:
-          type: string
+  Admin:
+    type: object
+    required: [id, email, name]
+    properties:
+      id:
+        type: string
+        format: uuid
+      email:
+        type: string
+        format: email
+      name:
+        type: string
 
-    ErrorResponse:
-      type: object
-      required: [code, message]
-      properties:
-        code:
-          type: string
-        message:
-          type: string
+  ErrorResponse:
+    type: object
+    required: [code, message]
+    properties:
+      code:
+        type: string
+      message:
+        type: string
 
-    RecentShift:
-      type: object
-      required: [id, volunteerName, projectName, startedAt, endedAt]
-      properties:
-        id:
-          type: string
-          format: uuid
-        volunteerName:
-          type: string
-        projectName:
-          type: string
-        startedAt:
-          type: string
-          format: date-time
-        endedAt:
-          type: string
-          format: date-time
-          nullable: true
+  RecentShift:
+    type: object
+    required: [id, volunteerName, projectName, startedAt, endedAt]
+    properties:
+      id:
+        type: string
+        format: uuid
+      volunteerName:
+        type: string
+      projectName:
+        type: string
+      startedAt:
+        type: string
+        format: date-time
+      endedAt:
+        type: string
+        format: date-time
+        nullable: true
 
-    DashboardStats:
-      type: object
-      required: [totalVolunteers, activeVolunteers, totalProjects, activeProjects, shiftsToday, recentShifts]
-      properties:
-        totalVolunteers:
-          type: integer
-        activeVolunteers:
-          type: integer
-        totalProjects:
-          type: integer
-        activeProjects:
-          type: integer
-        shiftsToday:
-          type: integer
-        recentShifts:
-          type: array
-          items:
-            $ref: '#/components/schemas/RecentShift'
+  DashboardStats:
+    type: object
+    required: [totalVolunteers, activeVolunteers, totalProjects, activeProjects, shiftsToday, recentShifts]
+    properties:
+      totalVolunteers:
+        type: integer
+      activeVolunteers:
+        type: integer
+      totalProjects:
+        type: integer
+      activeProjects:
+        type: integer
+      shiftsToday:
+        type: integer
+      recentShifts:
+        type: array
+        items:
+          $ref: '#/components/schemas/RecentShift'
+
+  AdminListItem:
+    type: object
+    required: [id, email, name]
+    properties:
+      id:
+        type: string
+        format: uuid
+      email:
+        type: string
+        format: email
+      name:
+        type: string
+
