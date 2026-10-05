@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useKioskSession } from '~/composables/useKioskSession'
+import { useAutoReset } from '~/composables/useAutoReset'
 
 const {
   state,
@@ -16,14 +17,25 @@ const {
   reset,
 } = useKioskSession()
 
+const { countdown } = useAutoReset(
+  state,
+  ['active', 'completed', 'error'],
+  {
+    durationSeconds: 10,
+    onReset: reset,
+  },
+)
+
 function formatTime(iso: string | undefined): string {
   if (!iso) return ''
   return new Date(iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
 }
+
+definePageMeta({ layout: 'kiosk' })
 </script>
 
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-slate-100">
+  <!-- <div class="min-h-screen flex items-center justify-center bg-slate-100"> -->
     <div class="w-full max-w-md">
       <h1 class="text-3xl font-bold text-center mb-8">ShiftLog Kiosk</h1>
 
@@ -71,36 +83,38 @@ function formatTime(iso: string | undefined): string {
 
       <Card v-else-if="state === 'active'">
         <template #content>
-          <p class="text-xl text-center" data-testid="on-shift">You're on shift</p>
-          <p class="text-sm text-slate-500 text-center mt-1">
-            Started {{ formatTime(activeShift?.startedAt) }}
-          </p>
-          <Button
-            data-testid="check-out"
-            label="Check out"
-            class="w-full mt-6"
-            :disabled="state === 'submitting'"
-            :loading="state === 'submitting'"
-            @click="submitCheckOut"
-          />
+          <div class="text-center">
+            <p class="text-3xl font-semibold mb-2" data-testid="on-shift">You're on shift</p>
+            <p class="text-lg text-slate-500">
+              {{ volunteer?.name }} · started {{ formatTime(activeShift?.startedAt) }}
+            </p>
+            <Button
+              data-testid="check-out"
+              label="Check out"
+              size="large"
+              class="w-full mt-8"
+              :disabled="state === 'submitting'"
+              :loading="state === 'submitting'"
+              @click="submitCheckOut"
+            />
+            <p class="text-xs text-slate-400 mt-4" data-testid="auto-reset-countdown">
+              Returning to start in {{ countdown }}s
+            </p>
+          </div>
         </template>
       </Card>
 
       <Card v-else-if="state === 'completed'">
         <template #content>
-          <div data-testid="completed">
-            <p class="text-xl text-center">Thanks, {{ volunteer?.name }}</p>
-            <p class="text-sm text-slate-500 text-center mt-2">
-              Shift recorded.
+          <div data-testid="completed" class="text-center">
+            <p class="text-3xl font-semibold mb-2">Thanks, {{ volunteer?.name }}</p>
+            <p class="text-lg text-slate-500">Shift recorded.</p>
+            <p class="text-xs text-slate-400 mt-6" data-testid="auto-reset-countdown">
+              Returning to start in {{ countdown }}s
             </p>
-            <Button
-              label="Done"
-              class="w-full mt-6"
-              @click="reset"
-            />
           </div>
         </template>
       </Card>
     </div>
-  </div>
+  <!-- </div> -->
 </template>

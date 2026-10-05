@@ -4,7 +4,7 @@ import { useAdminSession } from '~/stores/adminSession'
 import { listDevAdmins } from '~/lib/api/admin'
 import type { AdminListItem } from '~/lib/api'
 
-// definePageMeta({ layout: 'admin' })
+definePageMeta({ layout: 'admin' })
 
 const session = useAdminSession()
 const admins = ref<AdminListItem[]>([])

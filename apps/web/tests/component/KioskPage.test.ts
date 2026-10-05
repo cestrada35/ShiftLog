@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEch, afterEach } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
 import KioskPage from '../../app/pages/kiosk/index.vue'
 import PinPad from '../../app/components/kiosk/PinPad.vue'
@@ -64,4 +64,33 @@ describe('Kiosk page', () => {
         expect(wrapper.find('[data-testid="completed"]').exists()).toBe(true)
     })
   })
+  
+})
+
+describe('Kiosk page — auto-reset', () => {
+  beforeEach(() => {
+    vi.useFakeTimers({ shouldAdvanceTime: true })
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
+  it('shows a countdown after check-in', async () => {
+    const wrapper = mountKiosk()
+
+    await wrapper.find('[data-testid="pin-input"]').setValue('1234')
+    await wrapper.find('[data-testid="pin-submit"]').trigger('click')
+    await vi.waitFor(() => {
+      expect(wrapper.find('[data-testid="check-in"]').exists()).toBe(true)
+    })
+
+    await wrapper.find('[role="radio"]').trigger('click')
+    await wrapper.find('[data-testid="check-in"]').trigger('click')
+
+    await vi.waitFor(() => {
+      expect(wrapper.find('[data-testid="auto-reset-countdown"]').exists()).toBe(true)
+    })
+  })
+
 })
