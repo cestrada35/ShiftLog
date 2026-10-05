@@ -2,3 +2,7 @@ __pycache__/
 *.pyc
 db.sqlite3
 *test-results*
+docker/web/.htpasswd
+apps/web/.nuxt
+apps/web/.output
+apps/web/node_modules

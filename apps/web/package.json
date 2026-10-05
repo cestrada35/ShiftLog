@@ -11,6 +11,7 @@
     "test:ui": "vitest --ui",
     "test:e2e": "playwright test",
     "typecheck": "nuxt typecheck",
+    "generate": "nuxt generate",
     "contract:generate": "openapi-typescript ../packages/contracts/openapi.yaml -o app/lib/api/types.ts"
   },
   "dependencies": {

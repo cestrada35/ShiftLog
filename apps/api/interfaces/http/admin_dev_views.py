@@ -18,7 +18,7 @@ class DevListAdminsView(APIView):
     permission_classes = []  # no auth required — this IS the sign-in helper
 
     def get(self, request):
-        if not settings.DEBUG:
+        if not settings.DEBUG or not settings.SHIFTLOG_DEMO_MODE:
             raise Http404()
 
         admins = AdminModel.objects.filter(is_active=True).order_by("name")

@@ -1,5 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  ssr: false,
   compatibilityDate: '2026-09-22',
   devtools: { enabled: process.env.NUXT_PUBLIC_USE_MOCKS === 'false' ? false : true },
   typescript: { strict: true },
