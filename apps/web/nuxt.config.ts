@@ -13,7 +13,7 @@ export default defineNuxtConfig({
     },
     autoImport: true,
     components: {
-      include: ['Button', 'InputText', 'Card', 'Message', 'ProgressSpinner'],
+      include: ['Button', 'InputText', 'Card', 'Message', 'ProgressSpinner', 'Select'],
     },
   },
   nitro: {

@@ -1,7 +1,20 @@
 <script setup lang="ts">
-import { useAdminSession } from '~/stores/adminSession'
+  import { watch } from 'vue'
+  import { useAdminSession } from '~/stores/adminSession'
 
-const session = useAdminSession()
+  const session = useAdminSession()
+  const router = useRouter()
+  const route = useRoute()
+
+
+  watch(
+  () => session.isAuthenticated,
+  (isAuth) => {
+    if (!isAuth && route.path !== '/admin/sign-in') {
+      router.push('/admin/sign-in')
+    }
+  },
+)
 </script>
 
 <template>
