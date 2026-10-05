@@ -173,7 +173,7 @@ paths:
                   password:
                     type: string
 
-/admin/volunteers/{volunteerId}:
+  /admin/volunteers/{volunteerId}:
     patch:
       tags: [admin]
       summary: Update a volunteer's name or active state
@@ -210,6 +210,25 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+/admin/dashboard/stats:
+  get:
+    tags: [admin]
+    summary: Get aggregate stats for the admin dashboard
+    security:
+      - AdminHeader: []
+    responses:
+      '200':
+        description: Dashboard stats
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DashboardStats'
+      '401':
+        description: Missing or invalid admin identity
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
 
 components:
   securitySchemes:
@@ -325,16 +344,40 @@ components:
         message:
           type: string
 
+    RecentShift:
+      type: object
+      required: [id, volunteerName, projectName, startedAt, endedAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        volunteerName:
+          type: string
+        projectName:
+          type: string
+        startedAt:
+          type: string
+          format: date-time
+        endedAt:
+          type: string
+          format: date-time
+          nullable: true
 
-864119
-  
-
-curl -s -X PATCH http://localhost:8000/api/admin/volunteers/$GRACE \
-  -H "Content-Type: application/json" \
-  -H "X-Admin-Id: $ADMIN" \
-  -d '{"isActive": true}' | python -m json.tool
-{
-    "id": "64db2706-19f9-4820-ad77-1b4e50da4baa",
-    "name": "Grace Hopper",
-    "isActive": false
-}
+    DashboardStats:
+      type: object
+      required: [totalVolunteers, activeVolunteers, totalProjects, activeProjects, shiftsToday, recentShifts]
+      properties:
+        totalVolunteers:
+          type: integer
+        activeVolunteers:
+          type: integer
+        totalProjects:
+          type: integer
+        activeProjects:
+          type: integer
+        shiftsToday:
+          type: integer
+        recentShifts:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecentShift'
