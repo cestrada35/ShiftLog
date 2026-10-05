@@ -1,6 +1,7 @@
 from django.urls import path
 
 from interfaces.http.admin_views import (
+    AdminDashboardStatsView,
     AdminWhoAmIView,
     VolunteerDetailView,
     VolunteerListView,
@@ -21,6 +22,7 @@ urlpatterns = [
 
     # Admin
     path("admin/whoami", AdminWhoAmIView.as_view(), name="admin-whoami"),
+    path("admin/dashboard/stats", AdminDashboardStatsView.as_view(), name="admin-dashboard-stats"),
     path("admin/volunteers", VolunteerListView.as_view(), name="admin-volunteers"),
     path("admin/volunteers/<uuid:volunteer_id>", VolunteerDetailView.as_view(), name="admin-volunteer-detail"),
 ]

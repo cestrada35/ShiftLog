@@ -59,3 +59,19 @@ class CreateVolunteerRequestSerializer(serializers.Serializer):
 class UpdateVolunteerRequestSerializer(serializers.Serializer):
     name = serializers.CharField(min_length=1, max_length=255, required=False)
     isActive = serializers.BooleanField(source="is_active", required=False)
+
+class RecentShiftSerializer(serializers.Serializer):
+    id = serializers.UUIDField()
+    volunteerName = serializers.CharField()
+    projectName = serializers.CharField()
+    startedAt = serializers.DateTimeField()
+    endedAt = serializers.DateTimeField(allow_null=True)
+
+
+class DashboardStatsSerializer(serializers.Serializer):
+    totalVolunteers = serializers.IntegerField()
+    activeVolunteers = serializers.IntegerField()
+    totalProjects = serializers.IntegerField()
+    activeProjects = serializers.IntegerField()
+    shiftsToday = serializers.IntegerField()
+    recentShifts = RecentShiftSerializer(many=True)

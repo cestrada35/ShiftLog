@@ -15,10 +15,13 @@ from interfaces.http.container import (
 from interfaces.http.serializers import (
     AdminSerializer,
     CreateVolunteerRequestSerializer,
+    DashboardStatsSerializer,
     ErrorResponseSerializer,
     UpdateVolunteerRequestSerializer,
     VolunteerSerializer,
 )
+from interfaces.http.queries.dashboard_stats import get_dashboard_stats
+
 
 
 def _error(code: str, message: str, status_code: int) -> Response:
@@ -90,3 +93,10 @@ class VolunteerDetailView(APIView):
                 return _error("not_found", "Volunteer not found", 404)
 
         return Response(VolunteerSerializer(volunteer).data)
+
+class AdminDashboardStatsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        stats = get_dashboard_stats()
+        return Response(DashboardStatsSerializer(stats).data)
