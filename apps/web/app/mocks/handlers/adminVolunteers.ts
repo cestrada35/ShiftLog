@@ -1,6 +1,6 @@
 import { http, HttpResponse, delay } from 'msw'
-import { volunteers } from '../fixtures/data'
-import type { Volunteer, ErrorResponse } from '~/lib/api'
+import { admins, volunteers, shifts, projects } from '../fixtures/data'
+import type { Volunteer, ErrorResponse, DashboardStats} from '~/lib/api'
 
 const BASE = '/api'
 
@@ -85,3 +85,43 @@ export const adminVolunteerHandlers = [
     return HttpResponse.json(updated)
   }),
 ]
+
+http.get(`${BASE}/admin/dashboard/stats`, async ({ request }) => {
+  await delay(80)
+  if (!requireAdmin(request)) {
+    return HttpResponse.json<ErrorResponse>(
+      { code: 'no_admin', message: 'No admin identity' },
+      { status: 401 },
+    )
+  }
+
+  const activeVolunteers = volunteers.filter(v => v.isActive).length
+
+  const recentShifts = shifts
+    .slice()
+    .sort((a, b) => b.startedAt.localeCompare(a.startedAt))
+    .slice(0, 5)
+    .map(s => {
+      const vol = volunteers.find(v => v.id === s.volunteerId)
+      const proj = projects.find(p => p.id === s.projectId)
+      return {
+        id: s.id,
+        volunteerName: vol?.name ?? 'Unknown',
+        projectName: proj?.name ?? 'Unknown',
+        startedAt: s.startedAt,
+        endedAt: s.endedAt,
+      }
+    })
+
+  const todayIso = new Date().toISOString().slice(0, 10)
+  const shiftsToday = shifts.filter(s => s.startedAt.startsWith(todayIso)).length
+
+  return HttpResponse.json<DashboardStats>({
+    totalVolunteers: volunteers.length,
+    activeVolunteers,
+    totalProjects: projects.length,
+    activeProjects: projects.length,
+    shiftsToday,
+    recentShifts,
+  })
+})

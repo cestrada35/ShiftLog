@@ -1,4 +1,4 @@
-import type { Admin, Volunteer } from '~/lib/api'
+import type { Admin, Volunteer, DashboardStats } from '~/lib/api'
 import { request, ApiError } from './http'
 import { getCurrentAdminId } from './adminAuth'
 
@@ -47,4 +47,8 @@ export function updateVolunteer(
     method: 'PATCH',
     body: JSON.stringify(patch),
   })
+}
+
+export function getDashboardStats(): Promise<DashboardStats> {
+  return adminRequest<DashboardStats>('/api/admin/dashboard/stats')
 }
