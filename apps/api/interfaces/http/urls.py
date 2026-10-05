@@ -12,6 +12,7 @@ from interfaces.http.kiosk_views import (
     KioskAuthView,
     ListProjectsView,
 )
+from interfaces.http.admin_dev_views import DevListAdminsView
 
 urlpatterns = [
     # Kiosk
@@ -25,4 +26,5 @@ urlpatterns = [
     path("admin/dashboard/stats", AdminDashboardStatsView.as_view(), name="admin-dashboard-stats"),
     path("admin/volunteers", VolunteerListView.as_view(), name="admin-volunteers"),
     path("admin/volunteers/<uuid:volunteer_id>", VolunteerDetailView.as_view(), name="admin-volunteer-detail"),
+    path("admin/dev/admins", DevListAdminsView.as_view(), name="admin-dev-admins")
 ]

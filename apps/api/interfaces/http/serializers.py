@@ -75,3 +75,8 @@ class DashboardStatsSerializer(serializers.Serializer):
     activeProjects = serializers.IntegerField()
     shiftsToday = serializers.IntegerField()
     recentShifts = RecentShiftSerializer(many=True)
+
+class AdminListItemSerializer(serializers.Serializer):
+    id = serializers.UUIDField()
+    email = serializers.EmailField()
+    name = serializers.CharField()
