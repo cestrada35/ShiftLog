@@ -13,6 +13,10 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+    deploy:
+      resources:
+        limits:
+          memory: 512M
 
   api:
     build:
@@ -36,6 +40,10 @@ services:
         condition: service_healthy
     expose:
       - "8000"
+    deploy:
+      resources:
+        limits:
+          memory: 512M
 
   web:
     build:
@@ -45,9 +53,13 @@ services:
     depends_on:
       - api
     ports:
-      - "80:80"
+      - "127.0.0.1:8080:80"
     volumes:
       - ./docker/web/.htpasswd:/etc/nginx/.htpasswd:ro
+    deploy:
+      resources:
+        limits:
+          memory: 256M
 
 volumes:
   postgres_data:
