@@ -38,7 +38,12 @@ export default defineNuxtConfig({
       }
     }
   },
-  css: ['primeicons/primeicons.css', '~/assets/styles/motion.css', '~/assets/css/tailwind.css'],
+  css: [
+    'primeicons/primeicons.css', 
+    '~/assets/styles/motion.css', 
+    '~/assets/styles/surfaces.css',
+    '~/assets/css/tailwind.css'
+  ],
   components: [
     { path: '~/components', pathPrefix: false },
   ],
