@@ -1,0 +1,61 @@
+.surface {
+  --p-primary-color: var(--p-primary-600);
+  --p-content-background: var(--p-surface-0);
+  --p-text-color: var(--p-surface-900);
+  --p-text-muted-color: var(--p-surface-600);
+}
+
+/* ---- Dotted background ---- */
+.surface-dotted {
+  --dot-color: color-mix(in srgb, var(--p-primary-500) 30%, transparent);
+  --orb-near: color-mix(in srgb, var(--p-primary-400) 50%, transparent);
+  --orb-far:  color-mix(in srgb, var(--p-primary-200) 40%, transparent);
+  --dot-size: 2px;
+  --dot-spacing: 24px;
+
+  background-color: var(--p-surface-100);
+  background-image:
+    radial-gradient(circle at 110% -10%,
+      var(--orb-near) 0 340px,
+      var(--orb-far) 340px 520px,
+      transparent 520px),
+    radial-gradient(circle,
+      var(--dot-color) var(--dot-size),
+      transparent var(--dot-size));
+  background-size: 100% 100%, var(--dot-spacing) var(--dot-spacing);
+}
+
+/* Quieter variant for dense surfaces (admin) */
+.surface-dotted--quiet {
+  --dot-color: color-mix(in srgb, var(--p-primary-500) 15%, transparent);
+  --orb-near: color-mix(in srgb, var(--p-primary-400) 22%, transparent);
+  --orb-far:  color-mix(in srgb, var(--p-primary-200) 18%, transparent);
+}
+
+/* ---- Chrome (header / footer) ---- */
+.surface-chrome {
+  background: color-mix(in srgb, var(--p-primary-100) 50%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid color-mix(in srgb, var(--p-primary-600) 20%, transparent);
+}
+
+/* ---- Brand wordmark ---- */
+.brand-mark {
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  color: var(--p-text-color);
+}
+
+.brand-mark__accent,
+.brand-mark__dot {
+  color: var(--p-primary-600);
+}
+
+.brand-tagline {
+  font-size: 0.75rem;
+  color: var(--p-text-muted-color);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}

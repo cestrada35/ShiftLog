@@ -13,6 +13,8 @@ export function useKioskSession() {
   const selectedProjectId = ref<string | null>(null)
   const error = ref<string | null>(null)
 
+  const failedAttempts = ref(0)
+
   async function identify(pin: string) {
     try {
       const result = await authenticateByPin(pin)
@@ -31,6 +33,7 @@ export function useKioskSession() {
       activeShift.value = null
       error.value = err instanceof ApiError ? err.message : 'Something went wrong'
       state.value = 'error'
+      failedAttempts.value++
     }
   }
 
@@ -79,6 +82,7 @@ export function useKioskSession() {
     projects.value = []
     selectedProjectId.value = null
     error.value = null
+    failedAttempts.value = 0
   }
 
   return {
@@ -94,5 +98,6 @@ export function useKioskSession() {
     submitCheckIn,
     submitCheckOut,
     reset,
+    failedAttempts
   }
 }

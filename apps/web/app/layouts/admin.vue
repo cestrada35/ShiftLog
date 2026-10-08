@@ -1,13 +1,12 @@
 <script setup lang="ts">
-  import { watch } from 'vue'
-  import { useAdminSession } from '~/stores/adminSession'
+import { watch } from 'vue'
+import { useAdminSession } from '~/stores/adminSession'
 
-  const session = useAdminSession()
-  const router = useRouter()
-  const route = useRoute()
+const session = useAdminSession()
+const router = useRouter()
+const route = useRoute()
 
-
-  watch(
+watch(
   () => session.isAuthenticated,
   (isAuth) => {
     if (!isAuth && route.path !== '/admin/sign-in') {
@@ -18,11 +17,16 @@
 </script>
 
 <template>
-  <div class="min-h-screen bg-slate-50 flex flex-col">
-    <header class="bg-white border-b border-slate-200 px-6 py-3 flex items-center justify-between shrink-0">
-      <h1 class="text-lg font-semibold">ShiftLog Admin</h1>
-      <div class="flex items-center gap-4 text-sm">
-        <span v-if="session.admin" class="text-slate-600">
+  <div class="surface surface-dotted surface-dotted--quiet admin-layout">
+    <header class="admin-header surface-chrome">
+      <div class="admin-brand">
+        <span class="brand-mark">
+          Shift<span class="brand-mark__accent">Log</span><span class="brand-mark__dot">.</span>
+        </span>
+        <span class="brand-tagline">Admin</span>
+      </div>
+      <div class="admin-session">
+        <span v-if="session.admin" class="admin-session__name">
           {{ session.admin.name }}
         </span>
         <Button
@@ -35,11 +39,56 @@
       </div>
     </header>
 
-    <div class="flex flex-1 min-h-0">
+    <div class="admin-body">
       <AdminNav v-if="session.isAuthenticated" />
-      <main class="flex-1 p-6 overflow-auto">
+      <main class="admin-main">
         <slot />
       </main>
     </div>
   </div>
 </template>
+
+<style scoped>
+  .admin-layout {
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .admin-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1.5rem;
+    flex-shrink: 0;
+  }
+
+  .admin-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .admin-session {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.875rem;
+  }
+
+  .admin-session__name {
+    color: var(--p-text-muted-color);
+  }
+
+  .admin-body {
+    flex: 1;
+    display: flex;
+    min-height: 0;
+  }
+
+  .admin-main {
+    flex: 1;
+    padding: 1.5rem;
+    overflow: auto;
+  }
+</style>

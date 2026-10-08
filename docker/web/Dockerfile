@@ -13,6 +13,10 @@ COPY apps/web/ ./
 # Nuxt reads NUXT_PUBLIC_* at build time, but our runtime uses
 # relative /api paths, so no secrets are baked into the bundle.
 ENV NUXT_PUBLIC_USE_MOCKS=false
+
+ARG PRIMEUI_LICENSE
+ENV PRIMEUI_LICENSE=$PRIMEUI_LICENSE
+
 RUN npm run generate
 
 # ---- Stage 2: serve with Nginx ----

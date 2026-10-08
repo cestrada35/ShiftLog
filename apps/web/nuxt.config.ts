@@ -1,4 +1,9 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
+
+
+// import Aura from '@primeuix/themes/aura'
+// import Lara from '@primeuix/themes/lara'
+import { ShiftLogPreset } from './app/theme/preset'
+
 export default defineNuxtConfig({
   ssr: false,
   compatibilityDate: '2026-09-22',
@@ -7,10 +12,18 @@ export default defineNuxtConfig({
   modules: [
     '@pinia/nuxt',
     '@primevue/nuxt-module',
+    '@nuxtjs/tailwindcss',
   ],
   primevue: {
     options: {
-      theme: { preset: 'aura' },
+      theme: { preset: ShiftLogPreset,
+        options: {
+          // cssLayer: {
+          //   name: 'primevue',
+          //   order: 'tailwind-base, primevue, tailwind-utilities'
+          // }
+       },
+      }
     },
     autoImport: true,
     components: {
@@ -25,7 +38,12 @@ export default defineNuxtConfig({
       }
     }
   },
-  css: ['primeicons/primeicons.css'],
+  css: [
+    'primeicons/primeicons.css', 
+    '~/assets/styles/motion.css', 
+    '~/assets/styles/surfaces.css',
+    '~/assets/css/tailwind.css'
+  ],
   components: [
     { path: '~/components', pathPrefix: false },
   ],
