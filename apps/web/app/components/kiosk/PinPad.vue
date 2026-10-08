@@ -1,5 +1,26 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { useToast } from 'primevue/usetoast'
+
+const toast = useToast()
+
+const show = () => {
+  toast.add({
+    severity: 'success',
+    summary: 'Successfully loaded toast!',
+    detail: 'This is a toast message.',
+    life: 3000
+  })
+}
+
+// --- DEV PREVIEW ONLY — delete when PIN feedback TDD session lands ---
+const shaking = ref(false)
+function previewShake() {
+  shaking.value = false
+  requestAnimationFrame(() => { shaking.value = true })
+}
+onMounted(previewShake)
+// ---------------------------------------------------------------------
 
 const emit = defineEmits<{
   (e: 'submit', pin: string): void
@@ -16,9 +37,13 @@ function handleSubmit() {
 </script>
 
 <template>
-  <Card class="w-full max-w-md mx-auto">
+  <Card
+    :class="['w-full max-w-md mx-auto', { 'kiosk-shake': shaking }]"
+    @animationend="shaking = false"
+  >
     <template #content>
       <div class="flex flex-col gap-4">
+        <!-- <Button variant="outlined" @click="show()">Create toast</Button> -->
         <label for="pin" class="text-lg font-semibold">Enter your PIN</label>
         <InputText
           id="pin"
@@ -37,6 +62,7 @@ function handleSubmit() {
           class="w-full"
           @click="handleSubmit"
         />
+        <Button variant="outlined" @click="previewShake">*Test Error Shake Effect*</Button>
       </div>
     </template>
   </Card>
