@@ -12,10 +12,18 @@ export default defineNuxtConfig({
   modules: [
     '@pinia/nuxt',
     '@primevue/nuxt-module',
+    '@nuxtjs/tailwindcss',
   ],
   primevue: {
     options: {
-      theme: { preset: ShiftLogPreset },
+      theme: { preset: ShiftLogPreset,
+        options: {
+          // cssLayer: {
+          //   name: 'primevue',
+          //   order: 'tailwind-base, primevue, tailwind-utilities'
+          // }
+       },
+      }
     },
     autoImport: true,
     components: {
@@ -30,7 +38,7 @@ export default defineNuxtConfig({
       }
     }
   },
-  css: ['primeicons/primeicons.css', '~/assets/styles/motion.css'],
+  css: ['primeicons/primeicons.css', '~/assets/styles/motion.css', '~/assets/css/tailwind.css'],
   components: [
     { path: '~/components', pathPrefix: false },
   ],
