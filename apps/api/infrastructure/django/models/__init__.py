@@ -1,6 +1,6 @@
 from .admin import AdminModel
-from .user import UserModel
 from .project import ProjectModel
 from .shift import ShiftModel
+from .user import UserModel
 
-__all__ = ["AdminModel", "UserModel", "ProjectModel", "ShiftModel"]
+__all__ = ["AdminModel", "ProjectModel", "ShiftModel", "UserModel"]

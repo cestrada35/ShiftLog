@@ -1,5 +1,6 @@
 from django.urls import path
 
+from interfaces.http.admin_dev_views import DevListAdminsView
 from interfaces.http.admin_views import (
     AdminDashboardStatsView,
     AdminWhoAmIView,
@@ -12,7 +13,6 @@ from interfaces.http.kiosk_views import (
     KioskAuthView,
     ListProjectsView,
 )
-from interfaces.http.admin_dev_views import DevListAdminsView
 
 urlpatterns = [
     # Kiosk

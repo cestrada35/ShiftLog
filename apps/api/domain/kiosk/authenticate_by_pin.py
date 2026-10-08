@@ -2,9 +2,10 @@ from dataclasses import dataclass
 
 from domain.shifts.repository import ShiftRepository
 from domain.shifts.shift import Shift
-from domain.users.pin import Pin, InvalidPinFormat
+
 # from domain.users.pin_hasher import PinHasher
 from domain.users.hasher import PinHasher
+from domain.users.pin import Pin
 from domain.users.repository import UserRepository
 from domain.users.user import User
 

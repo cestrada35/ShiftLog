@@ -1,7 +1,6 @@
 from rest_framework.authentication import BaseAuthentication
 from rest_framework.exceptions import AuthenticationFailed
 
-from domain.admin.admin import Admin
 from infrastructure.django.repositories import DjangoAdminRepository
 
 ADMIN_HEADER = "X-Admin-Id"

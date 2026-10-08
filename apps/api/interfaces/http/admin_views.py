@@ -12,6 +12,7 @@ from interfaces.http.container import (
     make_set_volunteer_active_command,
     make_user_repository,
 )
+from interfaces.http.queries.dashboard_stats import get_dashboard_stats
 from interfaces.http.serializers import (
     AdminSerializer,
     CreateVolunteerRequestSerializer,
@@ -20,8 +21,6 @@ from interfaces.http.serializers import (
     UpdateVolunteerRequestSerializer,
     VolunteerSerializer,
 )
-from interfaces.http.queries.dashboard_stats import get_dashboard_stats
-
 
 
 def _error(code: str, message: str, status_code: int) -> Response:

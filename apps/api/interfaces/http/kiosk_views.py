@@ -12,7 +12,6 @@ from interfaces.http.container import (
     make_check_out_command,
     make_project_repository,
 )
-
 from interfaces.http.serializers import (
     CheckInRequestSerializer,
     CheckOutRequestSerializer,

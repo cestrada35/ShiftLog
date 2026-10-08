@@ -1,5 +1,6 @@
-import pytest
 from uuid import uuid4
+
+import pytest
 
 from domain.users.pin import Pin
 from infrastructure.auth.pin_hasher import HmacPinHasher

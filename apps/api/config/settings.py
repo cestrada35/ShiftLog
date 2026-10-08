@@ -27,14 +27,24 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "config.urls"
 
-if DEBUG:
+# - Local dev omits DJANGO_DB_ENGINE → defaults to sqlite.
+# - CI and production set DJANGO_DB_ENGINE=postgres explicitly.
+DB_ENGINE = os.environ.get("DJANGO_DB_ENGINE", "sqlite" if DEBUG else "postgres")
+
+if DB_ENGINE == "sqlite":
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
             "NAME": BASE_DIR / "db.sqlite3",
         }
     }
-else:
+elif DB_ENGINE == "postgres":
+    _required = ["POSTGRES_DB", "POSTGRES_USER", "POSTGRES_PASSWORD"]
+    _missing = [k for k in _required if not os.environ.get(k)]
+    if _missing:
+        raise RuntimeError(
+            f"DJANGO_DB_ENGINE=postgres requires: {', '.join(_missing)}"
+        )
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
@@ -45,6 +55,8 @@ else:
             "PORT": os.environ.get("POSTGRES_PORT", "5432"),
         }
     }
+else:
+    raise RuntimeError(f"Unknown DJANGO_DB_ENGINE: {DB_ENGINE!r}")
 
 REST_FRAMEWORK = {
     "DEFAULT_RENDERER_CLASSES": ["rest_framework.renderers.JSONRenderer"],

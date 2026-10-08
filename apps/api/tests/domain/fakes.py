@@ -1,14 +1,10 @@
 from uuid import UUID
 
 from domain.shifts.shift import Shift
+from domain.users.password import Password
 from domain.users.pin import Pin
 from domain.users.user import User
-from domain.users.password import Password
 
-
-class FakePinHasher:
-    def hash(self, pin: Pin) -> str:
-        return f"hashed:{pin.value}"
 
 class FakePinGenerator:
     """Returns PINs from a queue. Raises if exhausted."""
