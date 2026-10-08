@@ -7,8 +7,10 @@
   <div class="kiosk-layout">
     <header class="kiosk-header">
       <div class="kiosk-brand">
-        <span class="kiosk-brand__mark">ShiftLog</span>
-        <span class="kiosk-brand__tagline">Volunteer check-in</span>
+        <span class="kiosk-brand__mark">
+          Shift<span class="kiosk-brand__accent">Log</span><span class="kiosk-brand__dot">.</span>
+        </span>
+        <span class="kiosk-brand__tagline">Kiosk Panel</span>
       </div>
     </header>
 
@@ -71,10 +73,18 @@
   }
 
   .kiosk-brand__mark {
-    font-size: 1.125rem;
-    font-weight: 700;
-    letter-spacing: -0.01em;
+    font-size: 1.25rem;
+    font-weight: 800;
+    letter-spacing: -0.035em;
     color: var(--p-text-color);
+  }
+
+  .kiosk-brand__accent {
+    color: var(--p-primary-600);
+  }
+
+  .kiosk-brand__dot {
+    color: var(--p-primary-600);
   }
 
   .kiosk-brand__tagline {
