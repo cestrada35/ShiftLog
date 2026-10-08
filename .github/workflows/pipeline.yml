@@ -95,6 +95,24 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # ---- Node + Playwright deps FIRST (long-running, cacheable) ----
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+
+      - name: Install web deps
+        working-directory: apps/web
+        run: npm ci
+
+      - name: Install Playwright browser
+        working-directory: apps/web
+        run: npx playwright install --with-deps chromium --only-shell
+
+      # ---- Then prep and boot the stack (fast) ----
+
       - name: Prepare stack
         run: |
           cp .env.example .env
@@ -121,19 +139,38 @@ jobs:
           docker compose logs
           exit 1
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-          cache: npm
-          cache-dependency-path: apps/web/package-lock.json
+      - name: Ensure stack is up
+        run: |
+          if curl -fsS http://127.0.0.1:8080/api/kiosk/projects >/dev/null; then
+            echo "Stack already up"
+            exit 0
+          fi
+          echo "Stack is down. Restarting..."
+          docker compose up -d
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8080/api/kiosk/projects >/dev/null; then
+              echo "Stack is up"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "Stack still down"
+          docker compose logs
+          exit 1
 
-      - name: Install web deps
-        working-directory: apps/web
-        run: npm ci
+      # Diag
 
-      - name: Install Playwright browser
-        working-directory: apps/web
-        run: npx playwright install --with-deps chromium --only-shell
+      - name: Stack status (diagnostic)
+        if: always()
+        run: |
+          echo "=== docker compose ps ==="
+          docker compose ps
+          echo ""
+          echo "=== curl test ==="
+          curl -v http://127.0.0.1:8080/api/kiosk/projects || true
+          echo ""
+          echo "=== last 80 lines of logs ==="
+          docker compose logs --tail 80 || true
 
       - name: Playwright
         working-directory: apps/web
