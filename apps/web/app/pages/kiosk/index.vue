@@ -1,37 +1,40 @@
 <script setup lang="ts">
-import { useKioskSession } from '~/composables/useKioskSession'
-import { useAutoReset } from '~/composables/useAutoReset'
+  import { useKioskSession } from '~/composables/useKioskSession'
+  import { useAutoReset } from '~/composables/useAutoReset'
 
-const {
-  state,
-  volunteer,
-  activeShift,
-  completedShift,
-  projects,
-  selectedProjectId,
-  error,
-  identify,
-  selectProject,
-  submitCheckIn,
-  submitCheckOut,
-  reset,
-} = useKioskSession()
+  const shakeNonce = ref(0)
 
-const { countdown } = useAutoReset(
-  state,
-  ['active', 'completed', 'error'],
-  {
-    durationSeconds: 10,
-    onReset: reset,
-  },
-)
+  const {
+    state,
+    volunteer,
+    activeShift,
+    completedShift,
+    projects,
+    selectedProjectId,
+    error,
+    identify,
+    selectProject,
+    submitCheckIn,
+    submitCheckOut,
+    reset,
+    failedAttempts
+  } = useKioskSession()
 
-function formatTime(iso: string | undefined): string {
-  if (!iso) return ''
-  return new Date(iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-}
+  const { countdown } = useAutoReset(
+    state,
+    ['active', 'completed', 'error'],
+    {
+      durationSeconds: 10,
+      onReset: reset,
+    },
+  )
 
-definePageMeta({ layout: 'kiosk' })
+  function formatTime(iso: string | undefined): string {
+    if (!iso) return ''
+    return new Date(iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+  }
+
+  definePageMeta({ layout: 'kiosk' })
 </script>
 
 <template>
@@ -39,7 +42,11 @@ definePageMeta({ layout: 'kiosk' })
     <div class="w-full max-w-md">
       <h1 class="text-3xl font-bold text-center mb-8">ShiftLog Kiosk</h1>
 
-      <PinPad v-if="state === 'idle'" @submit="identify" />
+      <PinPad 
+        :shake-nonce="failedAttempts" 
+        v-if="state === 'idle' || state === 'error'" 
+        :error-message="state === 'error' ? error : null"
+        @submit="identify" />
 
       <Card v-else-if="state === 'identified'">
         <template #content>
@@ -68,7 +75,7 @@ definePageMeta({ layout: 'kiosk' })
         </template>
       </Card>
 
-      <Card v-else-if="state === 'error'">
+      <!-- <Card v-else-if="state === 'error'">
         <template #content>
           <p class="text-lg text-center text-red-600" data-testid="error">
             {{ error }}
@@ -79,7 +86,7 @@ definePageMeta({ layout: 'kiosk' })
             @click="reset"
           />
         </template>
-      </Card>
+      </Card> -->
 
       <Card v-else-if="state === 'active'">
         <template #content>
