@@ -19,6 +19,7 @@ services:
           memory: 512M
 
   api:
+    image: ghcr.io/cestrada35/shiftlog-api:${IMAGE_TAG:-latest}
     build:
       context: .
       dockerfile: docker/api/Dockerfile
@@ -46,9 +47,12 @@ services:
           memory: 512M
 
   web:
+    image: ghcr.io/cestrada35/shiftlog-web:${IMAGE_TAG:-latest}
     build:
       context: .
       dockerfile: docker/web/Dockerfile
+      args:
+        PRIMEUI_LICENSE: ${PRIMEUI_LICENSE}
     restart: unless-stopped
     depends_on:
       - api
