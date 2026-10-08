@@ -40,7 +40,7 @@
 <template>
   <!-- <div class="min-h-screen flex items-center justify-center bg-slate-100"> -->
     <div class="w-full max-w-md">
-      <h1 class="text-3xl font-bold text-center mb-8">ShiftLog Kiosk</h1>
+      <h1 class="text-3xl font-bold text-center mb-8">Volunteer Check-In</h1>
 
       <PinPad 
         :shake-nonce="failedAttempts" 
