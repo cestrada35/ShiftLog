@@ -5,7 +5,7 @@
         <span class="brand-mark">
           Shift<span class="brand-mark__accent">Log</span><span class="brand-mark__dot">.</span>
         </span>
-        <span class="brand-tagline">Volunteer check-in</span>
+        <span class="brand-tagline">Kiosk</span>
       </div>
     </header>
 
