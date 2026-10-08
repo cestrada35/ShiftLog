@@ -41,11 +41,11 @@ function handleSubmit() {
 
 <template>
   <Card
-    :class="['w-full max-w-md mx-auto', { 'kiosk-shake': shaking }]"
+    :class="[{ 'kiosk-shake': shaking }]"
     @animationend="shaking = false"
   >
     <template #content>
-      <div class="">
+      <div class="flex justify-center items-center flex-col">
         <!-- <Button variant="outlined" @click="show()">Create toast</Button> -->
         <label for="pin" class="">Enter your PIN</label>
         <InputText
@@ -56,11 +56,16 @@ function handleSubmit() {
           inputmode="numeric"
           autocomplete="off"
           :maxlength="6"
-          class="text-2xl text-center tracking-widest"
+          class="text-2xl text-center tracking-widest mt-4"
           fluid
           @keyup.enter="handleSubmit"
         />
-        <Button data-testid="pin-submit" label="Continue" fluid raised @click="handleSubmit" />
+        <Button 
+        data-testid="pin-submit" 
+        label="Continue"
+        raised
+        class="mt-4" 
+        @click="handleSubmit" />
         <!-- <Button variant="outlined" @click="previewShake">*Test Error Shake Effect*</Button> -->
       </div>
     </template>
