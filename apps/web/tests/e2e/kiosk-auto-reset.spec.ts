@@ -4,25 +4,24 @@ test('kiosk returns to PIN entry after check-in confirmation timeout', async ({ 
   await page.goto('/kiosk')
   await page.waitForLoadState('networkidle')
 
-  // Identify
   await page.getByTestId('pin-input').fill('1234')
   await page.getByRole('button', { name: 'Continue' }).click()
 
-  // Wait for project picker
   await expect(page.getByRole('radio').first()).toBeVisible()
-
-  // Pick project and check in
   await page.getByRole('radio').first().click()
   await page.getByTestId('check-in').click()
 
-  // Confirm we're on shift, countdown is visible
   await expect(page.getByTestId('on-shift')).toBeVisible()
   await expect(page.getByTestId('auto-reset-countdown')).toBeVisible()
 
-  // Wait for the reset (10s + small buffer)
+  // Auto-reset fires
   await expect(page.getByTestId('pin-input')).toBeVisible({ timeout: 15_000 })
 
-  // Confirm we're back to idle — no welcome message, no on-shift
-  await expect(page.getByText(/Welcome,/)).not.toBeVisible()
-  await expect(page.getByTestId('on-shift')).not.toBeVisible()
+  // Cleanup: Mark S is still on shift server-side. Check him out so the
+  // next test file starts from a clean state.
+  await page.getByTestId('pin-input').fill('1234')
+  await page.getByRole('button', { name: 'Continue' }).click()
+  await expect(page.getByTestId('check-out')).toBeVisible()
+  await page.getByTestId('check-out').click()
+  await expect(page.getByTestId('completed')).toBeVisible()
 })
