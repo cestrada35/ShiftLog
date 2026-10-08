@@ -51,6 +51,7 @@ jobs:
     env:
       DJANGO_SECRET_KEY: ci-not-a-secret
       PIN_HASH_SECRET: ci-not-a-secret
+      SHIFTLOG_DEMO_MODE: "true"
       DJANGO_DEBUG: "false"
       DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1
       POSTGRES_DB: shiftlog_test
