@@ -14,6 +14,8 @@ concurrency:
 
 env:
   REGISTRY: ghcr.io
+  IMAGE_API: ghcr.io/cestrada35/shiftlog-api
+  IMAGE_WEB: ghcr.io/cestrada35/shiftlog-web
 
 jobs:
   # ---------- Quality gates ----------
@@ -53,6 +55,7 @@ jobs:
       PIN_HASH_SECRET: ci-not-a-secret
       SHIFTLOG_DEMO_MODE: "true"
       DJANGO_DEBUG: "false"
+      DJANGO_DB_ENGINE: 'postgres'
       DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1
       POSTGRES_DB: shiftlog_test
       POSTGRES_USER: shiftlog
@@ -86,40 +89,54 @@ jobs:
           git diff --exit-code -- app/lib/api/types.ts
       - run: npm run typecheck
       - run: npm test
-
-  # ---------- E2E (PR only, optional but recommended) ----------
-
+ 
   e2e:
-    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     needs: [api-test, web-quality]
     steps:
       - uses: actions/checkout@v4
-      - name: Boot the stack
+
+      - name: Prepare stack
         run: |
           cp .env.example .env
-          sed -i 's|^DJANGO_SECRET_KEY=.*|DJANGO_SECRET_KEY=ci|' .env
-          sed -i 's|^PIN_HASH_SECRET=.*|PIN_HASH_SECRET=ci|' .env
-          # web container publishes 127.0.0.1:8080:80
-          docker compose up -d --build
+          sed -i 's|^DJANGO_SECRET_KEY=.*|DJANGO_SECRET_KEY=ci-not-a-secret|' .env
+          sed -i 's|^PIN_HASH_SECRET=.*|PIN_HASH_SECRET=ci-not-a-secret|' .env
+          sed -i 's|^SHIFTLOG_DEMO_MODE=.*|SHIFTLOG_DEMO_MODE=true|' .env
+          sed -i 's|^DJANGO_ALLOWED_HOSTS=.*|DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1|' .env
+          sed -i 's|^DJANGO_DB_ENGINE=.*|DJANGO_DB_ENGINE=postgres|' .env
+          touch docker/web/.htpasswd
+
+      - name: Boot the stack
+        run: docker compose up -d --build
+
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
           cache: npm
           cache-dependency-path: apps/web/package-lock.json
+
+      - name: Wait for web
+        run: |
+          for i in $(seq 1 60); do
+            if curl -fsS http://127.0.0.1:8080/ >/dev/null; then exit 0; fi
+            sleep 2
+          done
+          echo "web never came up"; docker compose logs; exit 1
+
       - name: Playwright
         working-directory: apps/web
         env:
-          PLAYWRIGHT_BASE_URL: http://localhost:8080
+          PLAYWRIGHT_BASE_URL: http://127.0.0.1:8080
         run: |
           npm ci
           npx playwright install --with-deps chromium
           npx playwright test
+
       - if: always()
         run: docker compose logs
+
       - if: always()
         run: docker compose down -v
-
   # ---------- Build + push (main only) ----------
 
   build-api:
@@ -141,14 +158,14 @@ jobs:
           file: docker/api/Dockerfile
           push: true
           tags: |
-            ${{ env.REGISTRY }}/${{ github.repository }}-api:${{ github.sha }}
-            ${{ env.REGISTRY }}/${{ github.repository }}-api:latest
+            ${{ env.IMAGE_API }}:${{ github.sha }}
+            ${{ env.IMAGE_API }}:latest
           cache-from: type=gha,scope=api
           cache-to: type=gha,scope=api,mode=max
 
   build-web:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: [web-quality]
+    needs: [web-quality, e2e]
     runs-on: ubuntu-latest
     permissions: { contents: read, packages: write }
     steps:
@@ -176,7 +193,7 @@ jobs:
 
   deploy:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: [build-api, build-web]
+    needs: [build-api, build-web]     # transitively gated by e2e now
     runs-on: ubuntu-latest
     environment:
       name: production
@@ -190,7 +207,7 @@ jobs:
           key: ${{ secrets.DEPLOY_SSH_KEY }}
           script: |
             set -e
-            cd ~/shiftlog
+            cd ~/apps/ShiftLog
             git fetch origin main
             git reset --hard origin/main
             ~/deploy.sh ${{ github.sha }}
@@ -204,3 +221,10 @@ jobs:
             sleep 2
           done
           echo "healthcheck failed"; exit 1
+
+      - name: Regression canary — photography-booking
+        run: |
+          if ! curl -fsS https://helenstudioservices.com/ >/dev/null; then
+            echo "photography-booking is DOWN"; exit 1
+          fi
+          echo "photography-booking still healthy"
