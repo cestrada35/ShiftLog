@@ -26,7 +26,12 @@ function onKeydown(event: KeyboardEvent, index: number) {
   else return
 
   event.preventDefault()
-  select(props.projects[next].id)
+
+    const target = props.projects[next]
+  if (!target) return   // ← add this guard
+
+  select(target.id)
+  
   const buttons = (event.currentTarget as HTMLElement)
     .parentElement
     ?.querySelectorAll<HTMLButtonElement>('[role="radio"]')

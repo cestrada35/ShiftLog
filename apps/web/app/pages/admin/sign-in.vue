@@ -16,7 +16,8 @@ async function loadAdmins() {
   try {
     admins.value = await listDevAdmins()
     if (admins.value.length > 0 && !selectedId.value) {
-      selectedId.value = admins.value[0].id
+      const first = admins.value[0]
+      if (first) selectedId.value = first.id
     }
   } catch {
     // Dev endpoint unavailable (probably non-DEBUG). Fall back to manual input.

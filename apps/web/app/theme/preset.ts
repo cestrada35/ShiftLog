@@ -33,38 +33,36 @@ export const ShiftLogPreset = definePreset(Aura, {
     },
     colorScheme: {
       light: {
-        root: {
+        // root: {
           primary: {
             color: '{primary.500}',
             contrastColor: '#ffffff',
             hoverColor: '{primary.600}',
             activeColor: '{primary.700}',
           },
-        },
+        // },
       },
       dark: {
-        root: {
+        // root: {
           primary: {
             color: '{primary.400}',
             contrastColor: '{surface.900}',
             hoverColor: '{primary.300}',
             activeColor: '{primary.200}',
           },
-        },
+        // },
       },
     },
   },
   components: {
     button: {
       root: {
-        minHeight: '3.5rem',
         fontSize: '1.125rem',
         paddingX: '1.5rem',
       },
     },
     inputtext: {
       root: {
-        minHeight: '3.5rem',
         fontSize: '1.5rem',
       },
     },
