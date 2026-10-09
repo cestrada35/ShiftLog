@@ -21,7 +21,9 @@ export default defineConfig({
             '--disable-setuid-sandbox',
             '--disable-dev-shm-usage',
             '--disable-gpu',
-            '--disable-features=NetworkServiceInProcess',
+            '--proxy-server=direct://',
+            '--proxy-bypass-list=*',
+            '--host-resolver-rules=MAP localhost 127.0.0.1',
           ],
         }
       : undefined,
