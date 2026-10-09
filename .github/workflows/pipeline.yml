@@ -109,7 +109,7 @@ jobs:
 
       - name: Install Playwright browser
         working-directory: apps/web
-        run: npx playwright install --with-deps chromium --only-shell
+        run: npx playwright install --with-deps chromium
 
       # ---- Then prep and boot the stack (fast) ----
 
@@ -172,20 +172,14 @@ jobs:
           echo "=== last 80 lines of logs ==="
           docker compose logs --tail 80 || true
 
-      - name: Playwright (with preflight)
+      - name: Playwright
         working-directory: apps/web
         env:
           PLAYWRIGHT_BASE_URL: http://localhost:8080
           SKIP_DB_RESET: "true"
         run: |
-          echo "=== curl from shell ==="
-          curl -sf http://localhost:8080/api/kiosk/projects && echo "curl OK"
-
-          echo "=== node fetch ==="
-          node -e "fetch('http://localhost:8080/api/kiosk/projects').then(r=>r.text()).then(t=>console.log('node OK:',t.substring(0,60))).catch(e=>{console.error('node FAILED:',e.message);process.exit(1)})"
-
-          echo "=== running playwright ==="
-          npx playwright test
+          xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" \
+            npx playwright test --headed
 
       - if: always()
         run: docker compose logs
