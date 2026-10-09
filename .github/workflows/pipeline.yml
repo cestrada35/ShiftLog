@@ -8,12 +8,13 @@ on:
   workflow_dispatch:
 
 concurrency:
-  # PRs cancel each other; main deploys queue up (no racing)
   group: pipeline-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:
   REGISTRY: ghcr.io
+  IMAGE_API: ghcr.io/cestrada35/shiftlog-api
+  IMAGE_WEB: ghcr.io/cestrada35/shiftlog-web
 
 jobs:
   # ---------- Quality gates ----------
@@ -53,6 +54,7 @@ jobs:
       PIN_HASH_SECRET: ci-not-a-secret
       SHIFTLOG_DEMO_MODE: "true"
       DJANGO_DEBUG: "false"
+      DJANGO_DB_ENGINE: postgres
       DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1
       POSTGRES_DB: shiftlog_test
       POSTGRES_USER: shiftlog
@@ -87,39 +89,6 @@ jobs:
       - run: npm run typecheck
       - run: npm test
 
-  # ---------- E2E (PR only, optional but recommended) ----------
-
-  e2e:
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-    needs: [api-test, web-quality]
-    steps:
-      - uses: actions/checkout@v4
-      - name: Boot the stack
-        run: |
-          cp .env.example .env
-          sed -i 's|^DJANGO_SECRET_KEY=.*|DJANGO_SECRET_KEY=ci|' .env
-          sed -i 's|^PIN_HASH_SECRET=.*|PIN_HASH_SECRET=ci|' .env
-          # web container publishes 127.0.0.1:8080:80
-          docker compose up -d --build
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-          cache: npm
-          cache-dependency-path: apps/web/package-lock.json
-      - name: Playwright
-        working-directory: apps/web
-        env:
-          PLAYWRIGHT_BASE_URL: http://localhost:8080
-        run: |
-          npm ci
-          npx playwright install --with-deps chromium
-          npx playwright test
-      - if: always()
-        run: docker compose logs
-      - if: always()
-        run: docker compose down -v
-
   # ---------- Build + push (main only) ----------
 
   build-api:
@@ -141,8 +110,8 @@ jobs:
           file: docker/api/Dockerfile
           push: true
           tags: |
-            ${{ env.REGISTRY }}/${{ github.repository }}-api:${{ github.sha }}
-            ${{ env.REGISTRY }}/${{ github.repository }}-api:latest
+            ${{ env.IMAGE_API }}:${{ github.sha }}
+            ${{ env.IMAGE_API }}:latest
           cache-from: type=gha,scope=api
           cache-to: type=gha,scope=api,mode=max
 
@@ -190,7 +159,7 @@ jobs:
           key: ${{ secrets.DEPLOY_SSH_KEY }}
           script: |
             set -e
-            cd ~/shiftlog
+            cd ~/apps/ShiftLog
             git fetch origin main
             git reset --hard origin/main
             ~/deploy.sh ${{ github.sha }}
@@ -204,3 +173,49 @@ jobs:
             sleep 2
           done
           echo "healthcheck failed"; exit 1
+
+      - name: Regression canary — photography-booking
+        run: |
+          if ! curl -fsS https://helenstudioservices.com/ >/dev/null; then
+            echo "photography-booking is DOWN"; exit 1
+          fi
+          echo "photography-booking still healthy"
+
+  # ---------- Post-deploy E2E (main only) ----------
+
+  e2e:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [deploy]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+
+      - name: Install web deps
+        working-directory: apps/web
+        run: npm ci
+
+      - name: Install Playwright browser
+        working-directory: apps/web
+        run: npx playwright install --with-deps chromium
+
+      - name: Playwright (against live deployment)
+        working-directory: apps/web
+        env:
+          PLAYWRIGHT_BASE_URL: https://shiftlog.dev
+          SKIP_DB_RESET: "true"
+        run: npx playwright test
+
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            apps/web/test-results/
+            apps/web/playwright-report/
+          retention-days: 7

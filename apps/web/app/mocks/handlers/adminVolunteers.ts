@@ -75,10 +75,19 @@ export const adminVolunteerHandlers = [
     }
 
     const patch = (await request.json()) as { name?: string; isActive?: boolean }
+    
+    const existing = volunteers[index]
+    if (!existing) {
+      return HttpResponse.json<ErrorResponse>(
+        { code: 'not_found', message: 'Volunteer not found' },
+        { status: 404 },
+      )
+    }
+
     const updated: Volunteer = {
-      ...volunteers[index],
-      ...(patch.name !== undefined ? { name: patch.name } : {}),
-      ...(patch.isActive !== undefined ? { isActive: patch.isActive } : {}),
+      id: existing.id,
+      name: patch.name ?? existing.name,
+      isActive: patch.isActive ?? existing.isActive,
     }
     volunteers[index] = updated
 
@@ -116,7 +125,15 @@ http.get(`${BASE}/admin/dashboard/stats`, async ({ request }) => {
   const todayIso = new Date().toISOString().slice(0, 10)
   const shiftsToday = shifts.filter(s => s.startedAt.startsWith(todayIso)).length
 
-  return HttpResponse.json<DashboardStats>({
+  // return HttpResponse.json<DashboardStats>({
+  //   totalVolunteers: volunteers.length,
+  //   activeVolunteers,
+  //   totalProjects: projects.length,
+  //   activeProjects: projects.length,
+  //   shiftsToday,
+  //   recentShifts,
+  // })
+  return HttpResponse.json({
     totalVolunteers: volunteers.length,
     activeVolunteers,
     totalProjects: projects.length,

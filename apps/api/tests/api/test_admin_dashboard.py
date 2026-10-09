@@ -1,6 +1,6 @@
-import pytest
 from uuid import uuid4
 
+import pytest
 from django.utils import timezone
 
 from infrastructure.django.models import AdminModel, ProjectModel, ShiftModel, UserModel

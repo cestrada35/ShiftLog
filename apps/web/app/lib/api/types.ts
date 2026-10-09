@@ -3,11 +3,6 @@
  * Do not make direct changes to the file.
  */
 
-export type DashboardStats = components['schemas']['DashboardStats']
-export type RecentShift = components['schemas']['RecentShift']
-export type webhooks = Record<string, never>;
-export type $defs = Record<string, never>;
-
 export interface paths {
     "/kiosk/auth": {
         parameters: {
@@ -214,8 +209,96 @@ export interface paths {
         };
         trace?: never;
     };
+    "/admin/dashboard/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get aggregate stats for the admin dashboard */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Dashboard stats */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["DashboardStats"];
+                    };
+                };
+                /** @description Missing or invalid admin identity */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/dev/admins": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Dev-only list of active admins (404 in production) */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Active admins */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AdminListItem"][];
+                    };
+                };
+                /** @description Not available (non-DEBUG environments) */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
-
+export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         KioskAuthRequest: {
@@ -288,6 +371,13 @@ export interface components {
             shiftsToday: number;
             recentShifts: components["schemas"]["RecentShift"][];
         };
+        AdminListItem: {
+            /** Format: uuid */
+            id: string;
+            /** Format: email */
+            email: string;
+            name: string;
+        };
     };
     responses: never;
     parameters: never;
@@ -295,7 +385,7 @@ export interface components {
     headers: never;
     pathItems: never;
 }
-
+export type $defs = Record<string, never>;
 export interface operations {
     kioskAuth: {
         parameters: {

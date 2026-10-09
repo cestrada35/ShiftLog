@@ -23,7 +23,7 @@ export const kioskHandlers = [
       s => s.volunteerId === volunteer.id && s.endedAt === null,
     ) ?? null
 
-    return HttpResponse.json<KioskAuthResponse>({
+    return HttpResponse.json({
       volunteer,
       activeShift,
     })

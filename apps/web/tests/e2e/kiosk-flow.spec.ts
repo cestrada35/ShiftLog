@@ -5,7 +5,7 @@ test('volunteer can check in and check out', async ({ page }) => {
   await page.waitForLoadState('networkidle')
 
   // Identify
-  await expect(page.getByText('ShiftLog Kiosk')).toBeVisible()
+  await expect(page.getByText('Volunteer Check-In')).toBeVisible()
   await page.getByTestId('pin-input').fill('1234')
   await page.getByRole('button', { name: 'Continue' }).click()
 

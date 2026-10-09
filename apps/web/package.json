@@ -37,7 +37,8 @@
     "openapi-typescript": "^7.13.0",
     "playwright": "^1.63.0",
     "tailwindcss-primeui": "^0.6.1",
-    "vitest": "^5.0.1"
+    "vitest": "^5.0.1",
+    "vue-tsc": "^3.3.12"
   },
   "msw": {
     "workerDirectory": [

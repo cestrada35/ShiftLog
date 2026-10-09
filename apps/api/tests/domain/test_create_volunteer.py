@@ -1,5 +1,6 @@
-import pytest
 from uuid import uuid4
+
+import pytest
 
 from domain.users.create_volunteer import (
     CreateVolunteerCommand,
@@ -11,7 +12,6 @@ from domain.users.set_volunteer_active import (
     VolunteerNotFound,
 )
 from domain.users.user import User
-
 from tests.domain.fakes import (
     FakePasswordGenerator,
     FakePasswordHasher,

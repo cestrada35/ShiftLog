@@ -1,6 +1,6 @@
-import pytest
 from uuid import uuid4
 
+import pytest
 from django.utils import timezone
 
 from domain.kiosk.authenticate_by_pin import (
@@ -8,10 +8,10 @@ from domain.kiosk.authenticate_by_pin import (
     InvalidPinError,
 )
 from infrastructure.auth.pin_hasher import HmacPinHasher
-from infrastructure.django.models import UserModel, ShiftModel
+from infrastructure.django.models import ShiftModel, UserModel
 from infrastructure.django.repositories import (
-    DjangoUserRepository,
     DjangoShiftRepository,
+    DjangoUserRepository,
 )
 
 

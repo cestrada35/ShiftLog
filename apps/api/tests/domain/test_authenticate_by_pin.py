@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from uuid import uuid4
 
 import pytest
@@ -10,7 +10,6 @@ from domain.kiosk.authenticate_by_pin import (
 from domain.shifts.shift import Shift
 from domain.users.pin import InvalidPinFormat, Pin
 from domain.users.user import User
-
 from tests.domain.fakes import (
     FakePinHasher,
     InMemoryShiftRepository,
@@ -66,7 +65,7 @@ def test_active_shift_is_included_in_identification():
     active = Shift.check_in(
         volunteer_id=user.id,
         project_id=uuid4(),
-        now=datetime(2026, 1, 1, 9, 0, tzinfo=timezone.utc),
+        now=datetime(2026, 1, 1, 9, 0, tzinfo=UTC),
     )
     shifts.save(active)
 
@@ -80,8 +79,8 @@ def test_active_shift_is_included_in_identification():
 def test_completed_shift_is_not_returned_as_active():
     user = make_user()
     shifts = InMemoryShiftRepository()
-    started = datetime(2026, 1, 1, 9, 0, tzinfo=timezone.utc)
-    ended = datetime(2026, 1, 1, 13, 0, tzinfo=timezone.utc)
+    started = datetime(2026, 1, 1, 9, 0, tzinfo=UTC)
+    ended = datetime(2026, 1, 1, 13, 0, tzinfo=UTC)
     completed = Shift.check_in(user.id, uuid4(), started).check_out(ended)
     shifts.save(completed)
 

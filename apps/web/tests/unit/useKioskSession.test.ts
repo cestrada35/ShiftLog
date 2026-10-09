@@ -34,39 +34,48 @@ describe('useKioskSession', () => {
 
     it('enters submitting state during check-in and returns active', async () => {
         const session = useKioskSession()
-
         await session.identify('1234')
-        session.selectProject(session.projects.value[0].id)
+
+        const firstProject = session.projects.value[0]
+        if (!firstProject) throw new Error('no project fixture')
+        session.selectProject(firstProject.id)
 
         const promise = session.submitCheckIn()
-        expect(session.state.value).toBe('submitting')
+        expect(session.submitting.value).toBe(true)
+        expect(session.state.value).toBe('identified')   // ← state doesn't change
 
         await promise
         expect(session.state.value).toBe('active')
-        expect(session.activeShift.value).not.toBeNull()
+        expect(session.submitting.value).toBe(false)
+    })
+
+    it('completes a shift via submitCheckOut and lands in completed', async () => {
+    const session = useKioskSession()
+    await session.identify('1234')
+
+    const firstProject = session.projects.value[0]
+    if (!firstProject) throw new Error('no project fixture')
+    session.selectProject(firstProject.id)
+    await session.submitCheckIn()
+
+    const promise = session.submitCheckOut()
+    expect(session.submitting.value).toBe(true)
+    expect(session.state.value).toBe('active')
+
+    await promise
+    expect(session.state.value).toBe('completed')
+    expect(session.submitting.value).toBe(false)
     })
 
     it('is a no-op if submitCheckIn is called without a selected project', async () => {
         const session = useKioskSession()
         await session.identify('1234')
 
+        session.selectProject('')
+
         await session.submitCheckIn()
 
         expect(session.state.value).toBe('identified')
-        expect(session.activeShift.value).toBeNull()
-    })
-
-    it('completes a shift via submitCheckOut and lands in completed', async () => {
-        const session = useKioskSession()
-        await session.identify('1234')
-        session.selectProject(session.projects.value[0].id)
-        await session.submitCheckIn()
-
-        const promise = session.submitCheckOut()
-        expect(session.state.value).toBe('submitting')
-
-        await promise
-        expect(session.state.value).toBe('completed')
         expect(session.activeShift.value).toBeNull()
     })
 

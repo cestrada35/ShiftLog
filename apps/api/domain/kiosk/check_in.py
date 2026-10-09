@@ -1,8 +1,8 @@
 from uuid import UUID
 
+from domain.shared.clock import Clock
 from domain.shifts.repository import ShiftRepository
 from domain.shifts.shift import Shift
-from domain.shared.clock import Clock
 
 
 class AlreadyCheckedIn(Exception):

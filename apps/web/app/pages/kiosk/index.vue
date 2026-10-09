@@ -1,4 +1,5 @@
 <script setup lang="ts">
+  import { ref, watch, onMounted } from 'vue'
   import { useKioskSession } from '~/composables/useKioskSession'
   import { useAutoReset } from '~/composables/useAutoReset'
 
@@ -6,6 +7,7 @@
 
   const {
     state,
+    submitting,
     volunteer,
     activeShift,
     completedShift,
@@ -54,22 +56,22 @@
           <ProjectPicker
             :projects="projects"
             :selected-id="selectedProjectId"
-            :disabled="state === 'submitting'"
+            :disabled="submitting"
             @select="selectProject"
           />
           <Button
             data-testid="check-in"
             label="Check in"
             class="w-full mt-6"
-            :disabled="!selectedProjectId || state === 'submitting'"
-            :loading="state === 'submitting'"
+            :disabled="!selectedProjectId || submitting"
+            :loading="submitting"
             @click="submitCheckIn"
           />
           <Button
             label="Cancel"
             severity="secondary"
             class="w-full mt-2"
-            :disabled="state === 'submitting'"
+            :disabled="submitting"
             @click="reset"
           />
         </template>
@@ -100,8 +102,8 @@
               label="Check out"
               size="large"
               class="w-full mt-8"
-              :disabled="state === 'submitting'"
-              :loading="state === 'submitting'"
+              :disabled="submitting"
+              :loading="submitting"
               @click="submitCheckOut"
             />
             <p class="text-xs text-slate-400 mt-4" data-testid="auto-reset-countdown">
