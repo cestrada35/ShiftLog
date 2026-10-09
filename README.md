@@ -3,9 +3,9 @@
 A volunteer timekeeping app that replaces pen-and-paper logs with something both volunteers and admins actually want to use.
 
 **[Try the live demo →](https://shiftlog.dev/kiosk)**
-
 <!-- screenshot: kiosk-check-in -->
 <!-- ![Kiosk check-in](docs/screenshots/kiosk-check-in.png) -->
+<img width="2202" height="1182" alt="shiftlog-frontend-2" src="https://github.com/user-attachments/assets/8979cad3-24de-4a18-9ecb-9ec1b7adaee0" />
 
 ---
 
@@ -23,13 +23,15 @@ Two personas drive every decision:
 ## Screenshots
 
 <!-- screenshot: kiosk-identified -->
-<!-- ![Volunteer identified](docs/screenshots/kiosk-identified.png) -->
+<img width="2200" height="1182" alt="shiftlog-frontend-3" src="https://github.com/user-attachments/assets/0e7a8795-f914-4209-8512-b0475d92ba39" />
+
 
 <!-- screenshot: admin-dashboard -->
-<!-- ![Admin dashboard](docs/screenshots/admin-dashboard.png) -->
+<img width="2201" height="1182" alt="shiftlog-admin-3" src="https://github.com/user-attachments/assets/22ab0b9b-6483-471c-b7ea-7e409cbec4ce" />
 
 <!-- screenshot: admin-volunteers -->
-<!-- ![Volunteer management](docs/screenshots/admin-volunteers.png) -->
+<img width="2207" height="1187" alt="shiftlog-admin-4" src="https://github.com/user-attachments/assets/245151fb-e309-4865-815b-b18bf2177206" />
+
 
 ---
 
