@@ -14,6 +14,11 @@ export default defineConfig({
   use: {
     baseURL,
     trace: 'on-first-retry',
+    launchOptions: isCI
+      ? {
+          args: ['--no-sandbox', '--disable-dev-shm-usage'],
+        }
+      : undefined,
   },
   projects: [
     { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
