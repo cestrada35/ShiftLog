@@ -16,7 +16,13 @@ export default defineConfig({
     trace: 'on-first-retry',
     launchOptions: isCI
       ? {
-          args: ['--no-sandbox', '--disable-dev-shm-usage'],
+          args: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage',
+            '--disable-gpu',
+            '--disable-features=NetworkServiceInProcess',
+          ],
         }
       : undefined,
   },

@@ -172,12 +172,20 @@ jobs:
           echo "=== last 80 lines of logs ==="
           docker compose logs --tail 80 || true
 
-      - name: Playwright
+      - name: Playwright (with preflight)
         working-directory: apps/web
         env:
-          PLAYWRIGHT_BASE_URL: http://127.0.0.1:8080
+          PLAYWRIGHT_BASE_URL: http://localhost:8080
           SKIP_DB_RESET: "true"
-        run: npx playwright test
+        run: |
+          echo "=== curl from shell ==="
+          curl -sf http://localhost:8080/api/kiosk/projects && echo "curl OK"
+
+          echo "=== node fetch ==="
+          node -e "fetch('http://localhost:8080/api/kiosk/projects').then(r=>r.text()).then(t=>console.log('node OK:',t.substring(0,60))).catch(e=>{console.error('node FAILED:',e.message);process.exit(1)})"
+
+          echo "=== running playwright ==="
+          npx playwright test
 
       - if: always()
         run: docker compose logs
